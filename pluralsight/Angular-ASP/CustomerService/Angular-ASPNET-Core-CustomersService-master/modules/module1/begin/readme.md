@@ -1,1 +1,0 @@
-See the "Angular-ASPNET-Core-CustomersService" folder at the root level for the final source code.
