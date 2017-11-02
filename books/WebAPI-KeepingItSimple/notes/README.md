@@ -77,4 +77,11 @@ ExtensionMethods.cs
   </connectionStrings>
 ```
 
+## Create Repository Layer Components
+
+### Create the Repository base class
+
+Repository.cs
+
+### Create the CustomerRepository class
 
