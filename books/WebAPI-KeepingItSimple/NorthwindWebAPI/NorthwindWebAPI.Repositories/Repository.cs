@@ -21,7 +21,6 @@ namespace NorthwindWebAPI.Repositories
         public virtual IEnumerable<T> Get(string sqlCommand)
         {
             List<T> tList = new List<T>();
-
             using (IDataReader reader = ExecuteReader(sqlCommand, null, CommandType.Text))
             {
                 while (reader.Read())
@@ -35,7 +34,7 @@ namespace NorthwindWebAPI.Repositories
         }
 
         public virtual IEnumerable<T> Get(string sqlCommand, 
-                                          SqlParameter[] parameters, 
+                                          SqlParameter[] parameters,
                                           CommandType commandType = CommandType.Text)
         {
             List<T> entityList = null;
