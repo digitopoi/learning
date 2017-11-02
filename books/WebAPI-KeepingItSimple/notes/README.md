@@ -57,5 +57,8 @@ Repository - models
 
 ### Create components for the Model layer
 
+**use empty constructor in each class to aid serialization**
+
 Customer.cs
 Employee.cs
+Order.cs
