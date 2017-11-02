@@ -68,3 +68,13 @@ Product.cs
 ### Create Helper Class for Data Models
 
 ExtensionMethods.cs
+
+### Add Connection String
+
+```xml
+<connectionStrings>
+    <add name="NorthwindDbConnection" providerName="System.Data.SqlClient" connectionString="Data Source=SQLSERVERINSTANCE;initial catalog=Northwind;integrated security=true;"/>
+  </connectionStrings>
+```
+
+
