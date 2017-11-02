@@ -19,7 +19,7 @@ namespace SampleWebAPI.Controllers
         /// <returns></returns>
         public IEnumerable<Product> GetAllProducts()
         {
-            GetAllProducts();
+            GetProducts();
             return products;
         }
 
