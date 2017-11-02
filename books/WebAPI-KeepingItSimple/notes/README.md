@@ -65,4 +65,6 @@ Order.cs
 Order_Detail.cs
 Product.cs
 
+### Create Helper Class for Data Models
 
+ExtensionMethods.cs
