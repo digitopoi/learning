@@ -27,5 +27,6 @@ The repository/persistence layer deals with permanent storage and retrieval of d
     - results in repository code duplication
     - makes a change in the persistence layer a more resource-intensive and error-prone operation
 
+## Setup Model, Repository, and Service Layers
 
-
+[layers](https://www.codeproject.com/KB/aspnet/1157685/NorthwindWebAPI2_11_LayeredArchitecture.PNG)
