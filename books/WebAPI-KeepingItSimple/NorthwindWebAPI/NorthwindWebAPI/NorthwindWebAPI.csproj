@@ -253,6 +253,16 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NorthwindWebAPI.Models\NorthwindWebAPI.Models.csproj">
+      <Project>{2d1befdf-012f-46a2-beef-4ce259125226}</Project>
+      <Name>NorthwindWebAPI.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NorthwindWebAPI.Services\NorthwindWebAPI.Services.csproj">
+      <Project>{9619fed7-f02a-4f3b-be56-14e2da6de856}</Project>
+      <Name>NorthwindWebAPI.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

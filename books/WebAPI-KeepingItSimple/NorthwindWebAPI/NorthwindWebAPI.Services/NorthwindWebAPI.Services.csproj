@@ -66,19 +66,17 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Web.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NorthwindWebAPI.Models\NorthwindWebAPI.Models.csproj">
+      <Project>{2d1befdf-012f-46a2-beef-4ce259125226}</Project>
+      <Name>NorthwindWebAPI.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NorthwindWebAPI.Repositories\NorthwindWebAPI.Repositories.csproj">
+      <Project>{05dd9ddd-1ce5-4cf4-9287-6749b5170d53}</Project>
+      <Name>NorthwindWebAPI.Repositories</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

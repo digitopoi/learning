@@ -29,4 +29,23 @@ The repository/persistence layer deals with permanent storage and retrieval of d
 
 ## Setup Model, Repository, and Service Layers
 
-[layers](https://www.codeproject.com/KB/aspnet/1157685/NorthwindWebAPI2_11_LayeredArchitecture.PNG)
+![layers](https://www.codeproject.com/KB/aspnet/1157685/NorthwindWebAPI2_11_LayeredArchitecture.PNG)
+
+Each layer references the layers immediately below it. 
+
+The Models layer is a common dependency for all of the layers.
+
+**Repository Layer** - responsible for all database operations (no other layer should have any database code)
+
+**Services Layer** - encapsulates the business logic
+  - Controllers (in MVC project) react to evens initiated by the UI of the application
+  - Controllers ensure validity of request and validate parameters
+  - Controllers pass the request to the appropriate Service for processing
+   
+  - Example: 
+    - OrderController receives Get request
+    - OrderController makes a call to the relevant method of the OrderService
+    - OrderService assembles the Order by making calls to OrderRepository and OrderDetailRepository
+    - OrderService may also contact the CustomerRepository to retrieve the Customer for the Order and/or EmployeeRepository for the Employee handling the order.
+    - It returns the Order object back to the OrderController - which uses it to populate a view or respond to a web service request.
+
