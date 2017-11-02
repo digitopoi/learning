@@ -62,3 +62,7 @@ Repository - models
 Customer.cs
 Employee.cs
 Order.cs
+Order_Detail.cs
+Product.cs
+
+
