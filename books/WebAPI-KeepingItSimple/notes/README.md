@@ -49,3 +49,13 @@ The Models layer is a common dependency for all of the layers.
     - OrderService may also contact the CustomerRepository to retrieve the Customer for the Order and/or EmployeeRepository for the Employee handling the order.
     - It returns the Order object back to the OrderController - which uses it to populate a view or respond to a web service request.
 
+### Add references:
+
+WebAPI - models, services
+Services - models, repository
+Repository - models
+
+### Create components for the Model layer
+
+Customer.cs
+Employee.cs
