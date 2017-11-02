@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="CustomerRepository.cs" />
     <Compile Include="EmployeeRepository.cs" />
+    <Compile Include="OrderDetailRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository.cs" />
   </ItemGroup>
