@@ -196,5 +196,61 @@ Angular is **modular**
 import { Component } from '@angular/core';
 ```
 
+### Single Page Application (SPA)
 
+index.html contains the main page for the application
 
+This is often the only web page of the application
+
+Hence, an Angular application is often called a Single Page Application (SPA)
+
+index.html
+```html
+<body>
+    <pm-root></pm-root>
+</body>
+```
+
+When the Angular compiler sees a directive in a template, it looks to the Angular module for the definition
+
+Module is also used to bootstrap our application
+
+app.module.ts
+```js
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+
+@NgModule({
+    imports: [ BrowserModule ],
+    declarations: [ AppComponent ],
+    bootstrap: [ AppComponent ]
+})
+export class AppModule { }
+```
+
+Identified as a module by passing the NgModule decorator and passing in metadata defining the details of this Angular module.
+
+For the NgModule decorator, the properties are arrays.
+
+The bootstrap array defines the startup component of the application
+
+## Component Checklist
+
+We create a class for the component with the code to support the view
+
+We use a decorator to define the component metadata, which includes the HTML for the component's template
+
+We import what we need from any third party library, from our modules, or from Angular itself
+
+When creating the component class, we give it a clear name - not only the name of the class, but also the name of the component
+
+Be sure to include export keyword signature when declaring a class.
+
+Set the appropriate data type and default value when possible when declaring properties.
+
+### Something is wrong checklist
+
+F12 and use developer tools to check the console. Angular error messages are often quite clear if you read past the initial technical details.
+
+Recheck your code.
