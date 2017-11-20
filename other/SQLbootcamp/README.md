@@ -474,3 +474,87 @@ VALUES ('Dora', 'Smith', 58);
 ```
 
 ## CRUD Commands
+
+### Official Introduction to SELECT
+
+How do we retrieve and search data in a database?
+
+```sql
+SELECT * FROM cats;
+```
+
+The '*' means to select all of the columns
+
+#### Select Expression
+
+What columns do you want?
+
+```sql
+SELECT name FROM cats;
+
+SELECT age FROM cats;
+
+SELECT cat_id FROM cats;
+
+
+-- selecting multiple columns (order matters):
+SELECT name, age FROM cats;
+```
+
+### Introduction to WHERE
+
+Allows us to get more specific (rather than selecting a whole column)
+
+We'll use WHERE all the time - not just for searching / selecting
+
+```sql
+SELECT * FROM cats WHERE age=4;
+SELECT * FROM cats WHERE name="Egg";
+```
+
+with comparing two columns:
+```sql
+SELECT cat_id, age FROM cats WHERE cat_id=age;
+```
+
+### Introduction to Aliases
+
+Easier to read results
+
+```sql
+SELECT cat_id AS id, name FROM cats;
+```
+
+Our data is clear and straightforward right now - so, not clear why this is useful.
+
+Will become more useful as the data becomes more complicated (more tables, with column names that are the same, for example)
+
+### The UPDATE command
+
+How do we alter existing data?
+
+
+Find, in the cats table, all of the cats who have a breed of 'Tabby' and change that breed to 'Shorthair'
+```sql
+UPDATE cats SET breed='Shorthair'
+WHERE breed='Tabby';
+```
+
+```sql
+UPDATE cats SET age=14
+WHERE name='Misty';
+```
+
+**A good rule of thumb**- try selecting before you update (to make sure you're targeting the right data)
+
+### Introduction to DELETE
+
+Same syntax as SELECT (just use DELETE keyword)
+
+Also, make sure to SELECT first to make sure you're selecting what you want.
+
+```sql
+DELETE FROM cats WHERE name='Egg';
+```
+
+
