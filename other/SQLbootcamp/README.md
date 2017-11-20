@@ -269,3 +269,208 @@ DROP TABLE <tablename>;
 
 4. Delete your table
 
+## Inserting Data (and a couple of other things)
+
+### Inserting Data
+
+```sql
+INSERT INTO cats(name, age) VALUES ('Jetson', 7);
+```
+
+some people prefer:
+```sql
+INSERT INTO cats
+            (NAME,
+            age)
+VALUES      ("Jetson",
+            7);
+```
+
+* The order you write the column names matters. You can declare them in the INSERT part in any order - but, you have to follow the same order in the VALUES part.
+
+### Super Quick Intro To SELECT
+
+SELECT is covered in more depth in the next section - showing now so we can see what is added.
+
+```sql
+SELECT * FROM cats;
+```
+
+### Multiple INSERT
+
+You can use INSERT to bulk-insert data
+
+```sql
+INSERT INTO cats(name, age)
+VALUES ('Charlie', 10)
+      ,('Sadie', 3)
+      ,('Lazy Bear', 1);
+```
+
+### INSERT Challenges
+
+Create a people table
+- first_name - 20 char limit
+- last_name - 20 char limit
+- age - int
+
+Insert Your 1st Person
+- Tina Belcher, 13 years old
+
+Insert Your 2nd Person (using different order)
+- Bob Belcher, 42 years old
+
+Write one multiple insert:
+- Linda Belcher, 45 years old
+- Phillip Frond, 38 years old
+- Calvin Fischoeder, 70 years old
+
+
+```sql
+    CREATE TABLE people
+      (
+        first_name VARCHAR(20),
+        last_name VARCHAR(20),
+        age INT
+      );
+
+    INSERT INTO people(first_name, last_name, age)
+    VALUES ('Tina', 'Belcher', 13);
+
+    INSERT INTO people(age, last_name, first_name)
+    VALUES (42, 'Belcher', 'Bob');
+
+    INSERT INTO people(first_name, last_name, age)
+    VALUES('Linda', 'Belcher', 45)
+      ,('Phillip', 'Frond', 38)
+      ,('Calvin', 'Fischoeder', 70);
+```
+
+### NULL and NOT NULL
+
+**NULL** means "the value is not known"
+
+**NULL** DOES NOT MEAN 'ZERO'!
+
+By default, columns allow null values
+
+Right now we could do this (not provide age):
+```sql
+INSERT INTO cats(name)
+VALUES ('Alabama');
+```
+
+or even this:
+
+```sql
+INSERT INTO cats()
+VALUES ();
+```
+
+When we define the table, we can specify that a column should not allow nulls
+
+```sql
+CREATE TABLE cats
+    (
+        name VARCHAR(100) NOT NULL,
+        age INT NOT NULL
+    );
+```
+
+### Setting Default Values
+
+If a column is specified as NOT NULL, SQL will assign a default value to a row that is missing a value. 
+
+If it is a string, it will insert an empty string, if it is an integer, it will insert 0.
+
+You can also define default values as fallbacks.
+
+```sql
+CREATE TABLE cats
+    (
+        name VARCHAR(100) DEFAULT 'unnamed',
+        age INT DEFAULT 99
+    );
+```
+
+Isn't this redundant?
+
+```sql
+CREATE TABLE cats
+    (
+        name VARCHAR(100) NOT NULL DEFAULT 'unnamed',
+        age INT NOT NULL DEFAULT 99
+    );
+```
+
+No! If NOT NULL is not specified - you could still manually set something to be null.
+
+### A Primer on Primary Keys
+
+- Right now, we could insert identical data
+
+- Why is this a problem?
+
+  - we want our data to be uniquely identifiable
+
+We need to have a new field with an Id - even if the cats have the same name and age - we can still identify them individually
+
+**Primary key** - a unique identifier
+
+```sql
+CREATE TABLE unique_cats (cat_id INT NOT NULL
+                        , name VARCHAR(100)
+                        , age INT
+                        , PRIMARY KEY (cat_id));
+```
+
+If you try to add an entry with a key that is already in the database, it will not add it.
+
+Instead of manually enterring the Id when you insert new data - you can have it increment it programatically
+
+```sql
+CREATE TABLE unique_cats (cat_id INT NOT NULL AUTO_INCREMENT,
+                          name VARCHAR(100),
+                          age INT,
+                          PRIMARY KEY (cat_id));
+```
+
+### Table Constraits Exercise
+
+Define an Employees table with the following fields:
+- id - number (automatically increments), mandatory, primary key
+- last_name - text, mandatory
+- first_name - text, mandatory
+- middle_name - text, not mandatory
+- age - number, mandatory
+- current_status - text, mandatory, defaults to 'employed'
+
+```sql
+CREATE TABLE employees 
+    (
+        id INT AUTO_INCREMENT NOT NULL,
+        first_name VARCHAR(255) NOT NULL,
+        last_name VARCHAR(255) NOT NULL,
+        middle_name VARCHAR(255),
+        age INT NOT NULL,
+        current_status VARCHAR(255) NOT NULL DEFAULT 'employed',
+        PRIMARY KEY(id)
+    );
+
+--alternate way of defining a primary key:
+CREATE TABLE employees2 
+    (
+        id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+        first_name VARCHAR(255) NOT NULL,
+        last_name VARCHAR(255) NOT NULL,
+        middle_name VARCHAR(255),
+        age INT NOT NULL,
+        current_status VARCHAR(255) NOT NULL DEFAULT 'employed'
+    );
+
+--test insert:
+INSERT INTO employees(first_name, last_name, age) 
+VALUES ('Dora', 'Smith', 58);
+```
+
+## CRUD Commands
