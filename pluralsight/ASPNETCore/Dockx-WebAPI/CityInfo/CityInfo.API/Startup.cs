@@ -32,6 +32,8 @@ namespace CityInfo.API
 
             app.UseMvc();
 
+            app.UseStatusCodePages();
+
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Hello World!");

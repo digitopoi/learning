@@ -47,5 +47,122 @@ Three types of development by convention:
 2. staging
 3. production
 
+## Creating an API and Returning Resources
 
+### Middleware for Building an API
+
+ASP.NET WEB API (http services)
+
+ASP.NET MVC (client facing web applications)
+
+ASP.NET Web API and ASP.NET MVC are now unified in ASP.NET Core MVC now
+
+#### Clarifying the MVC Pattern
+
+Architectural pattern
+
+Loose coupling, separation of concerns: testability, reuse
+
+NOT the full application architecture (just presentation)
+
+Controllers depend on the view and the model - The view depends on the model
+
+The consumer of the API sends requests that are received by the controller
+
+### Adding the ASP.NET Core MVC Middleware
+
+To add the MVC framework services, we need to add the AddMvc extension method in the ConfigureServices method
+
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMvc();
+}
+```
+
+If we run now we will get a blank page - 404 error - we added MVC middleware, it doesn't do anything yet.
+
+### ASP.NET Core 2 Metapackages and Runtime Store
+
+Microsoft.AspNetCore.All metapackage
+
+ASP.NET is modular - comes in many pieces - but, modularity comes with a set of potential issues (not always easy to find the functionality you need, keeping track of version numbers can be cumbersome)
+
+The metapackages helps with this - all ASP.NET Core 2.0 application reference this by default
+
+Metapackages add references to a list of packages
+
+The runtime store is a location on disk containing these (and other) packages
+
+    - faster deployment
+    - lower disk space use
+    - improved startup performance
+
+This is optional - you can still add the packages you need instead of the metapackage
+
+### Returning resources part 1
+
+JsonResult class to return JSON data
+
+```c#
+public JsonResult GetCities()
+{
+    return new JsonResult();
+}
+```
+
+### Routing
+
+Routing matches request URI to the controller method
+
+Convention-based and attribute-based routing
+
+#### Convention based routing
+
+Passed to the UseMvc extension method:
+```c#
+app.UseMvc(config => {
+    config.MapRoute(
+        name: "Default",
+        template: "{controller}/{action}/{id?}",
+        defaults: new { controller="Home", action="Index" }
+    );
+});
+```
+
+These are usually used with the MVC framework for navigating views.
+
+#### Attribute-based routing
+
+These are better for APIs
+
+Attributes at controller & action level, including an (optional) template
+
+The URI is matched to a specific action on a controller, depending on the attributes
+
+## The Importance of Status Codes
+
+Part of the response
+
+Provide information on:
+  - whether or not the request worked out as expected
+  - what is responsible for a failed request
+
+### Level 200 - SUCCESS
+200: Ok
+201: Created
+204: No Content
+
+### Level 400 - Client Error
+400: Bad Request
+401: Unauthorized
+403: Forbidden
+404: Not found
+409: Conflicts
+
+### Level 500 - Server Error
+
+500: Internal Server Error
+
+## Returning Child Resources
 
