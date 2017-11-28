@@ -166,3 +166,11 @@ Provide information on:
 
 ## Returning Child Resources
 
+ex. api/cities/PointsOfInterest
+
+## Working With Serializer Settings
+
+Configure services so Json properties are capitalized instead of the default lowercase
+```c#
+
+```

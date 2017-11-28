@@ -254,3 +254,8 @@ Set the appropriate data type and default value when possible when declaring pro
 F12 and use developer tools to check the console. Angular error messages are often quite clear if you read past the initial technical details.
 
 Recheck your code.
+
+## Introduction to Components
+
+Changing from inline template to linked template
+
