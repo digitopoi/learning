@@ -186,3 +186,69 @@ Need to provide a link to the new URL:
 
 The routerLink is the selector for the RouterLink directive that turns user clicks into router navigations. It's a public directive in the RouterModule.
 
+## HTTP
+
+HttpClient is Angular's mechanism for communicating with a remote server over HTTP
+
+To make HttpClient available everywhere in the app:
+
+- open the root AppModule,
+- import the HttpClientModule symbol from @angular/common/http,
+- add it to the @NgModule.imports array
+
+The tutorial *mimics* communication with a remote data server by using the *In-memory Web API* module.
+
+In-memory Web API intercepts the requests, applies them to ana in-memory data store, and returns simulated responses.
+
+Useful in early stages of app development when the server's web api is ill-defined or not yet implemented.
+
+Converting the getHeroes() method from returning an array of mock heroes to returning an Observable<Hero[]>:
+
+```javascript
+//  before:
+getHeroes(): Observable<Hero[]> {
+    return of(HEROES);
+}
+
+//  after:
+getHeroes(): Observable<Hero[]> {
+    return this.http.get<Hero[]>(this.heroes.Url)
+}
+```
+
+All HttpClient methods return an RxJS Observable of something.
+
+HTTP is a request/response protocol. You make a request, it returns a single response.
+
+In general, an Observable can return multiple values over time. An Observable from HttpClient always emits a single value and then completes, never to emit again.
+
+This particular HttpClient.get call returns an Observable<Hero[]>, "an observable of hero arrays". In practice, it will only return a single hero array.
+
+### HttpClient.get returns response data
+
+HttpClient.get returns the *body* of the response as an untyped JSON object by default. Applying the optional type specifier, <Hero[]>, gives you a typed result object.
+
+The shape of the JSON data is determined by the server's data API. 
+
+Other APIs may bury the data you want within an object. You might have to dig that data out by processing the Observable result with the RxJS map operator.
+
+Although not discussed here, there's an example of map in the getHeroNo404() method included in the sample source code. 
+
+### Error Handling
+
+Things go wrong, especially when you're getting data from a remote server. The HeroService.getHeroes() method should catch errors and do something appropriate.
+
+To catch errors - you "pipe" the observable result from http.get() through an RxJS catchError() operator.
+
+```javascript
+import { catchError, map, tap } from 'rxjs/operators';
+```
+
+```javascript
+getHeroes(): Observable<Hero[]> {
+    return this.http.get<Hero[]>(this.heroesUrl)
+        .pipe(
+            catchError(this.handleError('getHeroes', []))
+        );
+}
+```
