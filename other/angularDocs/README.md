@@ -144,3 +144,45 @@ getHeroes(): void {
 
 Injecting the MessageService into the HeroService which is injected into the HeroesComponent
 
+## Routing
+
+An Angular best practice is to load and configure the router in a separate, top-level module that is dedicated to routing and imported by the root AppModule.
+
+By convention, the module class name is AppRoutingModule and it belongs in the app-routing.module.ts in the src/app folder.
+
+```bash
+ng generate module app-routing --flat --module=app
+```
+
+--flat puts the file in src/app instead of its own folder
+--module=app tells the CLI to register it in the imports array of the AppModule
+
+*Routes* tells the router which view to display when a user clicks a link or pastes a URL into the browser address bar.
+
+A typical Angular Route has two properties:
+
+1. path- a string that matches the URL in the browser address bar
+2. component- the component that the router should create when navigating to this route.
+
+### RouterModule.forRoot()
+
+You must first initialize the router and start it listening for browser location changes.
+
+In the @NgModule.imports array:
+
+```javascript
+imports: [ RouterModule.forRoot(routes) ]
+```
+
+This method calls forRoot() because you configure the router at the application's root level. The forRoot() method supplies the service providers and directives needed for routing, and performs the initial navigation based on the current browser URL.
+
+### RouterLink
+
+Need to provide a link to the new URL:
+
+```javascript
+<a routerLink="/heroes">
+```
+
+The routerLink is the selector for the RouterLink directive that turns user clicks into router navigations. It's a public directive in the RouterModule.
+
