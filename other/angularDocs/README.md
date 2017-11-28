@@ -62,3 +62,26 @@ Use ngOnInit() for two main reasons:
 Don't fetch data in component constructor. Constructors should do no more than set the initial local variables to simple values.
 
 ngOnInit() is a good place for a component to fetch its initial data.
+
+## Pipes
+
+A pipe takes in data as input and transforms it to a desired output. 
+
+Angular comes with many built-in pipes: DatePipe, UpperCasePipe, LowerCasePipe, CurrencyPipe, and PercentPipe. 
+
+A pipe can accept a number of optional parameters to fine-tune its output.
+
+```javascript
+<p>The hero's birthday is {{ birthday | date:"MM/dd/yy" }} </p>
+```
+
+### Chaining pipes
+
+You can chain pipes together:
+
+```javascript
+{{ birthday | date | uppercase}}
+
+// FRIDAY, APRIL 15, 1988
+```
+
