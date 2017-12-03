@@ -26,3 +26,33 @@ var polygon = L.polygon([
     [51.503, -0.06],
     [51.51, -0.047]
 ]).addTo(mymap);
+
+//  Add popups
+marker.bindPopup("<b>Hello world!</b><br>I am a popup!").openPopup();
+circle.bindPopup("I am a circle.");
+polygon.bindPopup("I am a polygon.");
+
+//  Standalone popup
+var popup = L.popup()
+    .setLatLng([51.475, -0.09])
+    .setContent("I am a standalone popup.")
+    .openOn(mymap);
+
+//  Demonstrating click event
+// function onMapClick(e) {
+//     alert("You clicked the map at " + e.latlng);
+// }
+
+// mymap.on('click', onMapClick);
+
+// Improve previous example by using popup instead of alert
+var popup = L.popup();
+
+function onMapClick(e) {
+    popup
+        .setLatLng(e.latlng)
+        .setContent("You clicked the map at " + e.latlng.toString())
+        .openOn(mymap);
+}
+
+mymap.on('click', onMapClick);
