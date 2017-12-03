@@ -51,3 +51,28 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     accessToken: 'your.mapbox.access.token'
 }).addTo(mymap);
 ```
+
+Make sure that all code is called after the div and leaflet.js inclusion.
+
+Leaflet is provider agnostic (you can use different map templates - though, Mapbox and Leaflet work well!)
+
+## Markers, Circles, and Polygons
+
+Besides tile layers, you can easily add other things to your map, including markers, polylines, polygons, circles, and popups.
+
+Adding a marker:
+```js
+var marker = L.marker([51.5, -0.09]).addTo(myMap);
+```
+
+Adding a circle:
+Same, except you specify the radius in meters as a second argument - and lets you control how it looks by passing arguments as the last argument
+
+```js
+var circle = L.circle([51.508, -0.11], {
+    color: 'red',
+    fillColor: '#f03',
+    fillOpacity: 0.5,
+    radius: 500
+}).addTo(mymap);
+```
