@@ -58,6 +58,48 @@ Combination of both - QA should work with devs to create unit tests, help with s
 
 ## Your First Unit Tests
 
+### Getting Started
+
+1. Try to think of as many tests as possible for the method you're trying to create. 
+2. Write method stubs for each test
+3. Assert.Inconclusive() indicates no test has been written (think of it as // TODO: <>)
+4. Create a test for each method
+5. Create a test for each overload of a method
+6. Write tests to cover all if, else, switch, and loop statements
+7. Evaluate if you have too many test methods
+8. If you have too many test methods - consider refactoring original method
+9. Run the tests
+10. See all the inconclusive tests
+11. Write the tests themselves
+12. Refactor original method as needed
+13. Repeat until all test methods are working
+
+### Create FileProcess.cs class
+
+Test method stubs:
+```c#
+
+//  Test for a good filename
+[TestMethod]
+public void FileNameDoesExist() 
+{
+    Assert.Inconclusive();
+}
+
+//  Test for a bad file name
+[TestMethod]
+public void FileNameDoesNotExist()
+{
+    Assert.Inconclusive();
+}
+
+//  Test for no file name passed
+[TestMethod]
+public void FileNameNullOrEmpty_ThrowsArgumentNullException()
+{
+    Assert.Inconclusive();
+}
+```
 ## Avoid Hard-Coding in Unit Tests
 
 ## Initialization and Cleanup
