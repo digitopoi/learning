@@ -100,7 +100,64 @@ public void FileNameNullOrEmpty_ThrowsArgumentNullException()
     Assert.Inconclusive();
 }
 ```
+
+### Use AAA
+
+1. **Arrange**- initialize variables
+
+2. **Act**- invoke the method you are testing
+
+3. **Assert**- verfify the Act
+
+```c#
+[TestMethod]
+public void FileNameDoesExist()
+{
+  //  ARRANGE
+  FileProcess fp = new FileProcess();
+  bool fromCall;
+
+  //  ACT
+  fromCall = fp.FileExists(@"GoodFile.txt");
+
+  //  ASSERT
+  Assert.IsTrue(fromCall);
+}
+```
+
+### Exception Handling
+
+When you have a method that's going to throw an exception, we have to make sure to handle that
+
+1. [ExpectedException] - specify typeof() exception
+
+2. Try... catch - good when using data-driven tests
+
+### Code Coverage
+
+Have you covered all code with test(s)?
+
+- Is all code tested?
+
+- Helps you determine what else you need to test.
+
+Tool built into Visual Studio (Enterprise Edition only)
+
 ## Avoid Hard-Coding in Unit Tests
+
+### Best Practices
+
+1. Don't hard code 
+
+2. Use constants whenever possible
+
+3. Store data in a .config file
+
+4. Setup and tear down as close to each unit test as possible
+
+5. Use comments
+
+6. Use good variable and method names
 
 ## Initialization and Cleanup
 
