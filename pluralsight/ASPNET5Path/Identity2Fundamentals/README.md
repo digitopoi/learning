@@ -71,13 +71,13 @@ Claims are issued by an Identity provider - your own application or an external 
 
 6. Highly extensible - allows for any of these components to be switched out for your own implementation without breaking any other functionality
 
-## Why ASP.NET Identity?
+### Why ASP.NET Identity?
 
 - Common functionality between almost all applications with users and a login form. Why implement it yourself over and over again?
 
 - Not everyone's domain - high risks involved in getting it wrong
 
-## What ASP.NET Identity is not
+### What ASP.NET Identity is not
 
 - It's called ASP.NET Identity - NOT Identity 2 or Identity Framework (makes it easier to search for solutions)
 
@@ -87,7 +87,7 @@ Claims are issued by an Identity provider - your own application or an external 
 
 - It's NOT a security framework.
 
-## Demo: Creating a User
+### Demo: Creating a User
 
 - The connection string used here needs to be called DefaultConnection - the default Entity Framework package for ASP.NET Identity looks for this connection string by default.
 
@@ -111,7 +111,7 @@ var userManager = new UserManager<IdentityUser>()
 var creationResult = userManager.Create(new IdentityUser("scott@scottbrady91.com"), "Password123!");
 ```
 
-## Demo: Add a claim to this user
+### Demo: Add a claim to this user
 
 - To add a claim, we simply use the AddClaim method - accepts the userId and the claim (System.Security.Claim class) as parameters
 
@@ -121,10 +121,36 @@ var user = userManager.FindByName(username);
 var claimResult = userManager.AddClaim(user.Id, new Claim("given_name", "Scott"))
 ```
 
-## Verifying a password
+### Verifying a password
 
 Takes user object and password to verify - hashes the password value entered and compares it to what is stored in the database
 
 ```c#
 var isMatch = userManager.CheckPassword(user, password);
 ```
+
+## Implementing ASP.NET Identity
+
+### Architecture
+
+- ASP.NET Identity has two main components;
+
+1. Manager - how your application will interact with ASP.NET Identity
+
+2. Store - how ASP.NET Identity will interact with your database
+
+- Throughout all of this is a single entity - used to represent the identity being stored
+
+- The entity must implement an interface containing some required properties - can be used in every layer of your application
+
+- A role is just another claim
+
+## Entity Framework Defaults 
+
+Using Microsoft.AspNet.Identity.EntityFramework gives you:
+
+1. IUserStore
+
+2. IUSer
+
+3. DbContext
