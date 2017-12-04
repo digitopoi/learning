@@ -152,12 +152,54 @@ Tool built into Visual Studio (Enterprise Edition only)
 2. Use constants whenever possible
 
 3. Store data in a .config file
+  - add app.config to unit test project
+  - add <appSettings> element
+  - set field from config file
+  - Use field in test
+  - write code to create file
+  - write code to remove the file
+
+  ```xml
+  <appSettings>
+
+    <add key="GoodFileName"
+         value="[AppPath]\TestFile.txt"/>
+
+  </appSettings>
+  ```
+  - [AppPath] is a replaceable token
 
 4. Setup and tear down as close to each unit test as possible
 
 5. Use comments
 
 6. Use good variable and method names
+
+## TextContext Property
+
+Create property 'TextContext' in all your test cases
+
+Automatically created by the unit test framework and set before each test is run
+
+Useful for accessing test information and in data-driven tests
+
+### Useful properties on TextContext
+
+**DataConnection**
+
+**DataRow**
+
+**DeploymentDirectory**
+
+**TestName**
+
+### Useful methods on TextContext
+
+**BeginTimer**
+
+**EndTimer**
+
+**WriteLine**
 
 ## Initialization and Cleanup
 
