@@ -253,3 +253,141 @@ genders = ['male', 'female'];
     </label>
 </div>
 ```
+
+## The Reactive Approach
+
+Allows you to configure the form in greater detail
+
+### Reactive Setup
+
+Create variable in the controller to hold the form - make the variable of type FormGroup
+
+```js
+import { FormGroup } from '@angular/forms';
+//
+//  ...
+//
+signupForm: FormGroup
+```
+
+In Angular, a form is just a group of controls. Previously, we imported FormGroup to use NgForm (a wrapper for the form).
+
+Import ReactiveFormsModule into app.module.ts
+
+### Creating a Form in Code
+
+Controls are basically key-value pairs we pass as an object to the overall FormGroup
+
+When initializing a FormControl - three parameters available:
+
+1. Initial state, value
+
+2. Single validator or an array of validators
+
+3. Potential asynchronous validators
+
+```js
+export class AppComponent implements OnInit {
+    genders = ['male', 'female'];
+    signupForm: FormGroup;
+
+    ngOnInit() {
+        this.signupForm = new FormGroup({
+            'username': new FormControl(null),          //   set to null to have empty field
+            'email': new FormControl(null),
+            'gender': new FormControl('male')
+        });
+    }
+}
+```
+
+### Syncing HTML with the code
+
+Angular's default behavior is to create a form object behind the scenes when it seems a <form> element. 
+
+This time we don't want to do that, so we have to override it.
+
+[formGroup] tells Angular to use MY form group - and, need to pass our form as an argument to the directive.
+
+```html
+<form [formGroup]="signupForm">
+```
+
+Next, we need to tell Angular which controls need to be connected with which inputs in the template
+
+formControlName=""
+
+```html
+<input
+    type="text"
+    id="username"
+    formControlName="username"
+    class="form-control">
+```
+
+### Submitting a Reactive Form
+
+As in the template driven form, we use ngSubmit directive on the form element
+
+```html
+<form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+```
+
+The difference is that we don't need to get the form via a local reference. Instead, we use our field we created.
+
+```js
+onSubmit() {
+    console.log(this.signupForm);
+}
+```
+
+### Adding Validation
+
+In the template driven approach, we could simply add the 'required' HTML 5 attribute to the input element.
+
+It doesn't work this way with reactive forms! - Not configuring the form in the template - only synchronizing it.
+
+Instead, use second argument to specify validators in the controller:
+
+Can pass a single validator or an array of validators
+```js
+ngOnInit() {
+    this.signupForm = new FormGroup({
+        'username': new FormControl(null, Validators.required),     //  single validator
+        'email': new FormControl(null, [Validators.required, Validators.email]),        //  array validator
+        //  ...
+    })
+}
+```
+
+### Getting Access to Controls
+
+Displaying messages works differently since we have to access the controls differently using the reactive approach.
+
+Instead, use *ngIf directive by accessing <form>.get(<field>).valid - can either pass in the control name or the path
+
+```html
+<input 
+    type="text"
+    id="username"
+    formControlName="username"
+    class="form-control">
+<span
+    *ngIf="signupForm.get('username').valid && signupForm.get('username').touched"
+    class="help-block">Please enter a valid username</span>
+```
+
+### Grouping Controls
+
+Simply nest them in another FormGroup
+```js
+ngOnInit() {
+    this.signupForm: new FormGroup({
+        'userData': new FormGroup({
+            'username': new FormControl(null, Validators.required),
+            'email': new FormControl(null, [Validators.required, Validators.email])
+        }),
+        'gender': new FormControl('male')
+    });
+}
+```
