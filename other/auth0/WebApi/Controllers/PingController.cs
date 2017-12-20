@@ -6,7 +6,8 @@ namespace WebApi.Controllers
 {
     [RoutePrefix("api")]
     public class PingController : ApiController
-    {
+    {   
+        [Authorize]
         [Route("ping")]
         [HttpGet]
         public IHttpActionResult Ping()
