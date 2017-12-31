@@ -133,7 +133,17 @@
   <ItemGroup>
     <Compile Include="Infrastructure\ApplicationDbContext.cs" />
     <Compile Include="Infrastructure\ApplicationUser.cs" />
+    <Compile Include="Migrations\201712312310493_InitialCreate.cs" />
+    <Compile Include="Migrations\201712312310493_InitialCreate.Designer.cs">
+      <DependentUpon>201712312310493_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201712312310493_InitialCreate.resx">
+      <DependentUpon>201712312310493_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
