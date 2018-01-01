@@ -18,16 +18,16 @@ namespace WebApi.Models
         }
     }
 
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class AppUsersDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+        public AppUsersDbContext()
+            : base("SystemUsers", throwIfV1Schema: false)
         {
         }
         
-        public static ApplicationDbContext Create()
+        public static AppUsersDbContext Create()
         {
-            return new ApplicationDbContext();
+            return new AppUsersDbContext();
         }
     }
 }
