@@ -43,3 +43,13 @@ Examples:
   - AddToRoleAsync(Username, RoleName) - Assign user to a specific role
   - RemoveFromRoleAsync(Username, RoleName) - Remove user from specific Role
 
+### Add Owin "Startup" Class
+
+The Owin Startup class is fired when the server starts. 
+
+The Configuration() method accepts parameters of type IAppBuilder - supplied by the host at run-time.
+
+This "app" parameter" is an interface which will be used to compose the application for our Owin server. 
+
+- In the Startup class, we configure the server to create a fresh instance of "ApplicationDbContext" and "ApplicationUserManager" for each request and set it to the Owin context using the extension method "CreatePerOwinContext."
+
