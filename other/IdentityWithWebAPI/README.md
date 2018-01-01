@@ -62,3 +62,8 @@ This "app" parameter" is an interface which will be used to compose the applicat
 ### Create the "BaseApiController" Controller
 
 This will act as the base class which other Web API controllers will inherit from
+
+### Create the "ModelFactory" Class
+
+This class will contain all of the functions needed to shape the response object and control the object graph returned to the client (ex. PasswordHash not returned).
+
