@@ -67,3 +67,22 @@ This will act as the base class which other Web API controllers will inherit fro
 
 This class will contain all of the functions needed to shape the response object and control the object graph returned to the client (ex. PasswordHash not returned).
 
+### Add Method to Create Users in AccountsController
+
+First create a new binding model which contains the user data which will be sent from the client. Contains data annotation attributes which will validate the model before submitting it to the database. 
+
+Notice that a property is added to this model called "RoleName"
+
+Add a CreateUser(CreateUserBindingModel createUserModel) in the AccountsController
+
+  - Validate the request model based on data annotation in the binding model
+
+  - If the model is valid, we will create a new instance of "ApplicationUser"
+
+  - Then the CreateAsync() method from the AppUserManager class is called
+
+    - validates the username, email, and password
+
+    - if the request is valid, it will create a new user and add it to the AspNetUsers table and return success
+
+    - Good practice to return the resource after it is created in the location header and return 201 created
