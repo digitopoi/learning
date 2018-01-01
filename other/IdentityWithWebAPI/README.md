@@ -53,3 +53,12 @@ This "app" parameter" is an interface which will be used to compose the applicat
 
 - In the Startup class, we configure the server to create a fresh instance of "ApplicationDbContext" and "ApplicationUserManager" for each request and set it to the Owin context using the extension method "CreatePerOwinContext."
 
+## Define Web API Controllers and Methods
+
+### Create the "Accounts" Controller
+
+**AccountsController** - responsible for managing user accounts in our Identity system
+
+### Create the "BaseApiController" Controller
+
+This will act as the base class which other Web API controllers will inherit from
