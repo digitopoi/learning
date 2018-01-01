@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -25,9 +26,31 @@ namespace WebApi.Controllers
     {
         private const string LocalLoginProvider = "Local";
         private ApplicationUserManager _userManager;
+        private ApplicationRoleManager _roleManager;
 
-        public AccountController()
+        public AccountController(ApplicationUserManager userManager,
+                                 ISecureDataFormat<AuthenticationTicket> accessTokenFormat,
+                                 ApplicationRoleManager roleManager)
         {
+            //  Make an instance of the user manager in the controller to avoid null reference exception
+            UserManager = userManager;
+            AccessTokenFormat = accessTokenFormat;
+
+            //  Make an instance of the role manager in the constructor to avoid null reference exception
+            RoleManager = roleManager;
+        }
+
+        public ApplicationRoleManager RoleManager
+        {
+            get
+            {
+                return _roleManager ?? Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+            }
+
+            private set
+            {
+                _roleManager = value;
+            }
         }
 
         public AccountController(ApplicationUserManager userManager,
@@ -50,6 +73,56 @@ namespace WebApi.Controllers
         }
 
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
+
+        [AllowAnonymous]
+        [Route("users/{id:guid}/roles")]
+        [HttpPut]
+        public async Task<IHttpActionResult> AssignRolesToUser(string id, string[] rolesToAssign)
+        {
+            if (rolesToAssign == null)
+            {
+                return this.BadRequest("No roles specified");
+            }
+
+            //  Find the user we want to assign roles to to
+            var appUser = await this.UserManager.FindByIdAsync(id);
+
+            if (appUser == null || appUser.IsDeleted)
+            {
+                return NotFound();
+            }
+
+            //  Check if the current user has any roles
+            var currentRoles = await this.UserManager.GetRolesAsync(appUser.Id);
+
+            var rolesNotExist = rolesToAssign.Except(this.RoleManager.Roles.Select(x => x.Name)).ToArray();
+
+            if (rolesNotExist.Count() > 0)
+            {
+                ModelState.AddModelError("", string.Format("Roles '{0}' does not exist in the system", string.Join(",", rolesNotExist)));
+                return this.BadRequest(ModelState);
+            }
+
+            //  Remove user from current roles, if any
+            IdentityResult removeResult = await this.UserManager.RemoveFromRolesAsync(appUser.Id, currentRoles.ToArray());
+
+            if (!removeResult.Succeeded)
+            {
+                ModelState.AddModelError("", "Failed to remove user roles");
+                return BadRequest(ModelState);
+            }
+
+            //  Assign user to the new roles
+            IdentityResult addResult = await this.UserManager.AddToRolesAsync(appUser.Id, rolesToAssign);
+
+            if (!addResult.Succeeded)
+            {
+                ModelState.AddModelError("", "Failed to add user roles");
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new { userId = id, rolesAssigned = rolesToAssign });
+        }
 
         // GET api/Account/UserInfo
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
