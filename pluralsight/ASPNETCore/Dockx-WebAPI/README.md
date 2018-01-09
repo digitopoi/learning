@@ -137,6 +137,8 @@ app.UseMvc(config => {
 
 These are usually used with the MVC framework for navigating views.
 
+Not advised for APIs
+
 #### Attribute-based routing
 
 These are better for APIs
@@ -145,6 +147,16 @@ Attributes at controller & action level, including an (optional) template
 
 The URI is matched to a specific action on a controller, depending on the attributes
 
+| HTTP Method   | Attribute   | Level       | Sample Uri                  |
+|---------------|-------------|-------------|---------------------------- |
+| GET           | HttpGet     | Action      | /api/cities, /api/cities/1  |
+| POST          | HttpPost    | Action      | /api/cities                 |
+| PUT           | HttpPut     | Action      | /api/cities/1               |
+| PATCH         | HttpPatch   | Action      | /api/cities/1               |
+| DELETE        | HttpDelete  | Action      | /api/cities/1               |
+| ---           | Route       | Controller  | /api/cities/1               |
+
+[Route] attribute is used at the controller level. [Route("api/cities")]
 ## The Importance of Status Codes
 
 Part of the response
