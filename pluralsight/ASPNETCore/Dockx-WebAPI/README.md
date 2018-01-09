@@ -157,6 +157,13 @@ The URI is matched to a specific action on a controller, depending on the attrib
 | ---           | Route       | Controller  | /api/cities/1               |
 
 [Route] attribute is used at the controller level. [Route("api/cities")]
+
+## Adding DTOs
+
+Important to note: what is returned from or accepted by an API is not the same as the entities used by the underlying datastore.
+
+The underlying datastore will simply work on the DTO classes we're creating.
+
 ## The Importance of Status Codes
 
 Part of the response
@@ -188,7 +195,18 @@ ex. api/cities/PointsOfInterest
 
 ## Working With Serializer Settings
 
-Configure services so Json properties are capitalized instead of the default lowercase
-```c#
+Configure services so Json properties are capitalized instead of the default lowercase (if upgrading old Web API project to Core for consistency)
 
+```c#
+//  ConfigureServices()
+services.AddMvc()
+    .AddJsonOptions(o =>
+        if (o.SerializerSettings.ContractResolver != null)
+        {
+            var castedResolver = o.SerializerSettings.ContractResolver 
+                as DefaultContractResolver;
+
+            castedResolver.NamingStrategy = null;
+        }
+    );
 ```
