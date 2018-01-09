@@ -210,3 +210,112 @@ services.AddMvc()
         }
     );
 ```
+
+For most new applications, the default (camelCase) will be fine.
+
+## Formatters and Content Negotiation
+
+**content negotiation** - selecting the best representation for a given response when there are multiple representations available.
+
+If you're building an API for one client - you might be ok only returning JSON.
+
+If you're building an API for multiple clients, some of which you have no control over, chances are that not all of these clients can easily consume JSON.
+
+The consumer can request a specific format by passing in the requested media type through the Accept header.
+
+- application/json
+- application/xml
+
+If no accept header is available, or it doesn't support the requested formatted, it reverts to default (JSON in most cases today).
+
+**Output formatter** - deals with outputs. The consumer can request a specific type of output by setting the accept header.
+
+**Input formatter** - deals with input. The body of a post request, for example. Media type: content-type header. 
+
+```c#
+//  ConfigureServices()
+services.AddMvc()
+    .AddMvcOptions(o => o.OutputFormatters.Add(
+        new XmlDataContractSerializerOutputFormatter())
+    );
+
+```
+
+## Manipulating Resources
+
+Creating a Resource
+
+```c#
+[HttpPost("{cityId}/PointsOfInterest")]
+public IActionResult CreatePointOfInterest(int cityId,
+    [FromBody] PointOfInterestForCreationDto pointOfInterest)
+{
+    if (pointOfInterest == null)
+    {
+        return BadRequest();
+    }
+
+    var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+
+    if (city == null)
+    {
+        return NotFound();
+    }
+
+    //  demo purposes, to be improved
+    //  get highest current point of interest id
+    var maxPointOfInterestId = CitiesDataStore.Current.Cities.SelectMany(
+        c => c.PointsOfInterest).Max(p => p.Id);
+
+    // we have to map the dtos
+    var finalPointOfInterest = new PointOfInterestDto()
+    {
+        Id = ++maxPointOfInterestId,
+        Name = pointOfInterest.Name,
+        Description = pointOfInterest.Description
+    };
+
+    city.PointsOfInterest.Add(finalPointOfInterest);
+
+    return CreatedAtRoute("GetPointOfInterest", new
+    { cityId = cityId, id = finalPointOfInterest.Id }, finalPointOfInterest);
+}
+```
+
+## Validating Input
+
+Add attributes to DTO
+
+```c#
+public class PointOfInterestForCreationDto
+{
+    [Required(ErrorMessage = "You should provide a name value")]
+    [MaxLength(50)]
+    public string Name { get; set; }
+
+    [MaxLength(200)]
+    public string Description { get; set; }
+}
+```
+
+ModelState is a dictionary.
+
+It contains both the state of the model and model-binding validation. It represents a collection of name and value pairs that were submitted to our API, one for each property. It also contains a collection of error messages for each value submitted.
+
+```c#
+//  ...
+if (!ModelState.IsValid)
+{
+    return BadRequest(ModelState);
+}
+//  ...
+```
+
+Adding custom validation
+
+```c#
+if (pointOfInterest.Description == pointOfInterest.Name)
+{
+    ModelState.AddError("Description", "The provided description should be different from the name.);
+}
+```
