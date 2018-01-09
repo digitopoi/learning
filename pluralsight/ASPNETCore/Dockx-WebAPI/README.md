@@ -1,20 +1,25 @@
-#Building Your First API with ASP.NET Core
+# Building Your First API with ASP.NET Core
 
 ## The ASP.NET Core Request Pipeline & Middleware
 
-When an HTTP request comes in, we need to respond - request, response pipeline
+When an HTTP request comes in, we need to respond: request, response pipeline
 
 We can configure the request pipeline by adding **middleware**- software components that are assembled into an application pipeline to handle requests and responses.
 
-In older version of ASP.NET - modules and handlers did this for us. 
+In older version of ASP.NET - modules and handlers did this for us.
 
 In ASP.NET Core, the modules and handlers have been taken over by middleware.
 
-Each piece in the middleware pipeline decides whether to pass it on to the next component or not. The order middleware comes in the pipeline is important. If authentication middleware finds that the request isn't authorized it will not pass it on to the next piece of middleware, but it will immediately return an Unauthorized response.
+Each piece in the middleware pipeline decides whether to pass it on to the next component or not.
+
+The order middleware comes in the pipeline is important. 
+
+If authentication middleware finds that the request isn't authorized it will not pass it on to the next piece of middleware, but it will immediately return an Unauthorized response.
 
 ### Configuring the ASP.NET Request Pipeline
 
 Startup.cs
+
 ```c#
                                                //   IHostingEnvironment service allows you to programmaticaly 
                                                //   access the environment value
@@ -55,7 +60,7 @@ ASP.NET WEB API (http services)
 
 ASP.NET MVC (client facing web applications)
 
-ASP.NET Web API and ASP.NET MVC are now unified in ASP.NET Core MVC now
+ASP.NET Web API and ASP.NET MVC are unified in ASP.NET Core MVC now
 
 #### Clarifying the MVC Pattern
 
@@ -145,8 +150,9 @@ The URI is matched to a specific action on a controller, depending on the attrib
 Part of the response
 
 Provide information on:
-  - whether or not the request worked out as expected
-  - what is responsible for a failed request
+
+- whether or not the request worked out as expected
+- what is responsible for a failed request
 
 ### Level 200 - SUCCESS
 200: Ok
