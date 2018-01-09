@@ -319,3 +319,33 @@ if (pointOfInterest.Description == pointOfInterest.Name)
     ModelState.AddError("Description", "The provided description should be different from the name.);
 }
 ```
+
+## Patching a Resource / Partial Update
+
+PATCH Http method is for partial updates
+
+Standard format: Json Patch (RFC 6902)
+
+Defines a JSON document structure for expressing a sequence of operations to apply to a JSON document.
+
+The consumer of the API will create a JsonPatch document as the body of the patch request, adhering to this standard.
+
+example:
+
+```js
+[
+    {
+        "op": "replace",
+        "path": "/name",
+        "value": "new name"
+    },
+    {
+        "op": "replace",
+        "path": "/description",
+        "value": "new description"
+    }
+]
+```
+
+**JsonPatch document is essentially a list of operations like, at, remove, replace, etc. that have to be applied to the resource allowing for partial updates**
+
