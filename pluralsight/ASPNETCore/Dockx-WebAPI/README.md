@@ -349,3 +349,163 @@ example:
 
 **JsonPatch document is essentially a list of operations like, at, remove, replace, etc. that have to be applied to the resource allowing for partial updates**
 
+## Working With Services and Dependency Injection
+
+### Inversion of Control and Dependency Injection
+
+If a class is dependent upon a service, logger, etc. - it has to change when a dependency changes.
+
+It also makes it difficult to test in isolation.
+
+The class manages the lifetime of the dependency. 
+
+**Inversion of Control** - delegates the function of selecting a concrete implementation type for a class's dependencies to an external component. 
+
+**Dependency Injection** - a specialization of the Inversion of Control pattern. The Dependency Injection pattern uses an object - the container - to initialize objects and prove the required dependencies to the object.
+
+```c#
+public class PointsOfInterestController : Controller 
+{
+    private ILogger<PointsOfInterestController> _logger;                                //  INTERFACE - not concrete implementation
+
+    public PointsOfInterestController(ILogger<PointsOfInterestController> logger)       //  Constructor Injection
+    {
+        _logger = logger
+    }
+}
+```
+
+The controller is now decoupled from a concrete implementation of ILogger. 
+
+The dependencies can be replaced or updated with very few or no changes to the code in our class.
+
+The controller can easily be tested because those dependencies can be mocked by providing a mock version of ILogger.
+
+Previously, versions of ASP.NET MVC did not include a dependency injection container built in. 
+
+Some services are built in and registered with the container by default, like the logger. Others can be added.
+
+ConfigureServices() is used to register services with the built-in container.
+
+You could request an ILoggerFactory and create an instance of a logger, but there's another way:
+
+The container can also directly provide us with an ILogger<T> instance:
+
+```c#
+private ILogger<PointsOfInterestController> _logger;
+
+public PointsOfInterestController(ILogger<PointsOfInterestController> logger)
+{
+    _logger = logger;
+}
+```
+
+### Logging to a Database or a File
+
+ASP.Net Core does not contain a built in logger to a database or a file. It does contain one for logging to the event log
+
+There are different logging libraries supported (Serilog, elmah.io, Loggr, NLog, etc.).
+
+The integration of an external provider into ASP.Net Core's logging system is the same. 
+
+### Implementing and Using a Custom Service
+
+1. Transient Lifetime Services - created each time they are requested. Works best for lightweight, stateless services.
+
+2. Scoped Lifetime Services - created once per request. 
+
+3. Singleton Lifetime Services - created the first time they are requested or if you specify an instance when ConfigureServices() is run. Every subsequent request will use the same instance.
+
+```c#
+public interface IMailService
+{
+    void Send(string subject, string message);
+}
+```
+
+```c#
+public class LocalMailService : IMailService
+{
+    private string _mailTo = "admin@mycompany.com";
+    private string _mailFrom = "noreply@mycompany.com";
+
+    public void Send(string subject, string message)
+    {
+        //  send mail - output to debug window
+        Debug.WriteLine($"Mail from {_mailFrom} to {_mailTo}, with LocalMailService.");
+        Debug.WriteLine($"Subject: {subject}");
+        Debug.WriteLine($"Message: {message}");
+    }
+}
+```
+
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+    //  ...
+    services.AddTransient<IMailService, LocalMailService>();
+}
+```
+
+### Working With Configuration Files
+
+Almost all applications require some way of keeping and reading configuration values.
+
+ASP.Net Core can work with a variety of config files (JSON, XML, in-memory settings, command-line arguments, or environment variables).
+
+appSettings.json
+```js
+{
+    "mailSettings": {
+        "mailToAddress": "admin@mycompany.com",
+        "mailFromAddress": "noreply@mycompany.com"
+    }
+}
+```
+
+Now, we need to tell ASP.Net Core to read these settings from this file.
+
+Startup.cs
+
+```c#
+public class Startup
+{
+    public static IConfiguration Configuration { get; private set; }
+
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
+```
+
+```c#
+public class LocalMailService : IMailService
+{
+    private string _mailTo = Startup.Configuration["mailSettings:mailToAddress"];
+    private string _mailFrom = Startup.Configuration["mailSettings:mailFromAddress"];
+```
+
+### Scoping Configuration to Environments
+
+We can scope configuration files to a specific environment by providing different configuration sources, for which part of the name is the name of the environment.
+
+Adding an appsettings file for the production environment:
+
+appsettings.production.json
+```js
+{
+  "mailSettings": {
+    "mailToAddress": "admin@mycompany.com",
+  }
+}
+```
+
+appsettings.json
+```js
+{
+  "mailSettings": {
+    "mailToAddress": "developer@mycompany.com",
+    "mailFromAddress": "noreply@mycompany.com"
+  }
+}
+```
