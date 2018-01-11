@@ -509,3 +509,185 @@ appsettings.json
   }
 }
 ```
+
+## Entity Framework Core
+
+**Object-Relational Mapping** - (ORM) is a technique that lets you query and manipulate data from a database using an object-oriented paradigm.
+
+Entity Framework Core is not an upgrade to Entity Framework 6 and shouldn't be regarded as such.
+
+Entity Framework Core is a lightweight, extensible, and cross-platform version of Entity Framework.
+
+Not everything you're used to from Entity Framework 6 will be supported.
+
+Entity Framework Core is recommended for new applications that don't need the full EF6 feature set.
+
+EF supports a wide variety of databases, even non-relational ones.
+
+Can use for a code-first or database-first approach.
+
+### Creating Entity Classes
+
+The entities are (like the DTOs) just simple classes.
+
+The DTOs (outer-facing model) are different from entities.
+
+Not all fields, like computed fields, are stored in a database.
+
+The data we want to offer to an API is often shaped differently.
+
+By convention, primary keys are of integer of GUID data type will be set up to have their values generated on add.
+
+City.cs
+
+```c#
+public class City
+{
+    [Key]
+    public int Id { get; set; }
+
+    [Required]
+    [MaxLength(50)]
+    public string Name { get; set; }
+
+    [MaxLength(200)]
+    public string Description { get; set; }
+
+
+    public ICollection<PointOfInterest> MPointsOfInterest { get; set; }
+        = new List<PointOfInterest>();
+}
+```
+
+PointOfInterest.cs
+
+```c#
+public class PointOfInterest
+{
+    [Key]
+    public int Id { get; set; }
+
+    [Required]
+    [MaxLength(50)]
+    public string Name { get; set; }
+
+    [ForeignKey("CityId")]
+    public City City { get; set; }
+    public int CityId {get; set; }
+}
+```
+
+### Creating a DbContext
+
+The DbContext represents a session with the database, and it can be used to query and save instances of our entities.
+
+Install Microsoft.EntityFrameworkCore.SqlServer package - other necessary Entity Framework dependencies will be installed.
+
+```c#
+public class CityInfoContext : DbContext
+    {
+        public DbSet<City> Cities { get; set; }
+        public DbSet<PointOfInterest> PointsOfInterest { get; set; }
+    }
+```
+
+DbSets can be used to query and save instances of its entity type.
+
+LINQ queries against a DbSet will be translated into queries against the database.
+
+We need to register the context so that it's available for dependency injection.
+
+We need to provide a connection string to the database for the DbContext
+
+There are two ways of doing this.
+
+1. Override the OnConfigure() method on the DbContext
+
+```c#
+public class CityInfoContext : DbContext
+{
+    public DbSet<City> Cities { get; set; }
+    public DbSet<PointOfInterest> PointsOfInterest { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer("connectionstring");
+
+        base.OnConfiguring(optionsBuilder);
+    }
+}
+```
+
+2. Via the constructor
+
+```c#
+public class CityInfoContext : DbContext
+{
+    public DbSet<City> Cities { get; set; }
+    public DbSet<PointOfInterest> PointsOfInterest { get; set; }
+
+    public CityInfoContext(DbContextOptions<CityInfoContext> options)
+        : base(options)
+    {
+    }
+}
+```
+
+ConfigureServices()
+
+```c#
+var connectionString = @"Server=(localdb)\mssqllocaldb;Database=CityInfoDB;Trusted_Connection=True;";
+services.AddDbContext<CityInfoContext>(o => o.UseSqlServer("connectionString"));
+```
+
+Now, in the constructor of DbContext - we need to ensure that a database is created if one doesn't exist:
+
+```c#
+public CityInfoContext(DbContextOptions<CityInfoContext> options)
+    : base(options)
+{
+    Database.EnsureCreated();
+}
+```
+
+### Migrations
+
+Migrations provide code for us to change the database from one version to another.
+
+Add package: Microsoft.EntityFrameworkCore.Tools
+
+Run first migration:
+
+```bash
+Add-Migration CityInfoDBInitialMigration
+```
+
+Apply the migration to the database
+
+First change Database.EnsureCreated() to Database.Migrate() in DbContext
+
+```c#
+Database.Migrate();
+```
+
+```bash
+Update-Database
+```
+
+### Safely Storing Configuration Data
+
+Add connectionString used during development to the appsettings.json file.
+
+Get the value through the Configuration object in the ConfigureServices() method
+
+```c#
+var connectionString = Startup.Configuration["connectionStrings:cityInfoDBConnectionString"];
+```
+
+Add production connection string to appsettings.production.json
+
+### Seeding the Database
+
+Currently not an easy way to seed data like in Entity Framework Core.
+
+Currently, the best way to do it is by writing an extension method on the DbContext. And we'll ensure that the extension method is called when configuring the Http Request Pipeline in the startup class. 

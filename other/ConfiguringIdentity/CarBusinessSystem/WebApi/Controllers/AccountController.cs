@@ -28,6 +28,10 @@ namespace WebApi.Controllers
         private ApplicationUserManager _userManager;
         private ApplicationRoleManager _roleManager;
 
+        public AccountController()
+        {
+        }
+
         public AccountController(ApplicationUserManager userManager,
                                  ISecureDataFormat<AuthenticationTicket> accessTokenFormat,
                                  ApplicationRoleManager roleManager)

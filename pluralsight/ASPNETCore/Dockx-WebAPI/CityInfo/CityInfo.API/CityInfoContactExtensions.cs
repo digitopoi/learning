@@ -1,91 +1,83 @@
-﻿using CityInfo.API.Models;
+﻿using CityInfo.API.Entities;
+using CityInfo.API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CityInfo.API
 {
-    public class CitiesDataStore
+    public static class CityInfoContactExtensions
     {
-        public static CitiesDataStore Current { get; } = new CitiesDataStore();
-
-        public List<CityDto> Cities { get; set; }
-
-        public CitiesDataStore()
+           public static void EnsureSeedDataForContext(this CityInfoContext context)
         {
-            Cities = new List<CityDto>()
+            if (context.Cities.Any())
             {
-                new CityDto()
+                return;
+            }
+
+            //  init seed data
+            var cities = new List<City>()
+            {
+                new City()
                 {
-                    Id = 1,
                     Name = "New York City",
                     Description = "the one with the big park.",
-                    PointsOfInterest = new List<PointOfInterestDto>()
+                    PointsOfInterest = new List<PointOfInterest>()
                     {
-                        new PointOfInterestDto()
+                        new PointOfInterest()
                         {
-                            Id = 1,
                             Name = "Central Park",
                             Description = "The most visited urban park in the United States."
                         },
-                        new PointOfInterestDto()
+                        new PointOfInterest()
                         {
-                            Id = 2,
                             Name = "Empire State Building",
                             Description = "A 102-story skyscraper located in Midtown Manhattan."
                         },
 
                     }
                 },
-                new CityDto()
+                new City()
                 {
-                    Id = 2,
                     Name = "Antwerp",
                     Description = "The one with the cathedral that was never really finished.",
-                    PointsOfInterest = new List<PointOfInterestDto>()
+                    PointsOfInterest = new List<PointOfInterest>()
                     {
-                        new PointOfInterestDto()
+                        new PointOfInterest()
                         {
-                            Id = 3,
                             Name = "Cathedral of Our Lady",
                             Description = "A gothic style cathedral, conceived by architects Jan and Pieter Appelmans."
                         },
-                        new PointOfInterestDto()
+                        new PointOfInterest()
                         {
-                            Id = 4,
                             Name = "Antwerp Central Station",
                             Description = "The finest example of railway architecture in Belgium."
                         },
 
                     }
                 },
-                new CityDto()
+                new City()
                 {
-                    Id = 3,
                     Name = "Paris",
                     Description = "The one with the big tower.",
-                    PointsOfInterest = new List<PointOfInterestDto>()
+                    PointsOfInterest = new List<PointOfInterest>()
                     {
-                        new PointOfInterestDto()
+                        new PointOfInterest()
                         {
-                            Id = 5,
                             Name = "Eiffel Tower",
                             Description = "A wrought iron lattice tower on the Champ de Mars, named after engineer Gustave Eiffel"
                         },
-                        new PointOfInterestDto()
+                        new PointOfInterest()
                         {
-                            Id = 6,
                             Name = "The Louvre",
                             Description = "The world's largest museum."
                         },
 
                     }
-                }
-                context.Cities.AddRange(Cities);
+                },
             };
-
-            
         }
     }
 }

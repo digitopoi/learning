@@ -1,4 +1,5 @@
 ﻿using AspNetIdentity.WebApi.Infrastructure;
+using AspNetIdentity.WebApi.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
