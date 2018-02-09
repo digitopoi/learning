@@ -544,3 +544,244 @@ Use ob_start() when code may be ported to other servers.
 
 Don't necessarily have to call ob_end_flush() - when you get to the end of the PHP code - it will automatically be called for you.
 
+## Build Forms
+
+Basic HTML Form:
+
+```html
+<form action="register.php" method="post">
+    <input type="text" name="city" value="" />
+    <input type="text" name="state" value="" />
+    <input type="text" name="zipcode" value="" />
+    <input type="submit" value="Submit" />
+</form>
+```
+
+### Using Form Parameters
+
+PHP takes the form values and automatically assigns them to an associative array where we can access them.
+
+That array is stored in a super global variable called $_POST
+
+Unlike $_GET, we don't need to do any ecoding of the form parameters - no reserved characters to worry about.
+
+```php
+$name = $_POST['name'];
+
+//  Good practice to make sure the value exists
+$name = isset($_POST['name']) ? $_POST['name'] : '';
+
+$name = $_POST['name'] ?? '';
+```
+
+### Detect Form Submission
+
+Right now our create.php handles post requests and displays form submission data. But, a user could still make a get request to that url.
+
+Perhaps we want to redirect to another page? To do that - we need to detect whether the form has been submitted or not.
+
+#### Three main techniques:
+
+1. Test if a key parameter has a value
+
+```php
+if (isset($_POST['username'])) {
+    // process form
+}
+```
+
+2. Test if submit parameter was sent
+
+Adding name to submit input - so that it is included in the form data
+
+```html
+<input type="submit" name="submit" value="Submit" />
+```
+
+```php
+if (isset($_POST['submit'])) {
+    //  process form
+}
+```
+
+3. Test if request method was a POST
+
+```php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    //  process form
+}
+```
+
+### Single-Page Form Processing
+
+Having a single page which contains the form and the code to process the form (form that submits to itself).
+
+All logic related to the form is in one file.
+
+Redisplaying the form on errors.
+
+Return error messages.
+
+Populate the fields with previous values.
+
+## MySQL Introduction
+
+Check if MySQL is installed:
+
+```bash
+$ mysql --version
+```
+
+login
+
+```bash
+$ mysql -u root -p 
+```
+
+### Four Main Commands
+
+1. SHOW DATABASES;
+
+2. CREATE DATABASE db_name;
+
+3. USE db_name;
+
+4. DROP DATABASE db_name;
+
+### Users
+
+Generally, login as user
+
+We could log in from our web application as the root user as well - but, better to create a new MySQL user and assign it a password - and, then grant access to our database to that user.
+
+```bash
+GRANT ALL PRIVALEGES ON db_name.*
+TO 'username'@'localhost'
+IDENTIFIED BY 'password';
+```
+
+View access rights for a username:
+
+```bash
+SHOW GRANTS FOR 'username'@'localhost';
+```
+
+bankdev
+
+### Create a Table
+
+```bash
+CREATE TABLE table_name (
+    column_name1 definition,
+    column_name2 definition,
+    column_name3 definition,
+    options
+);
+```
+
+```bash
+CREATE TABLE subjects (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    menu_name VARCHAR(255),
+    position INT(3),
+    visible TINYINT(1),
+    PRIMARY KEY (id)
+);
+```
+
+Show tables:
+
+```bash
+SHOW TABLES;
+```
+
+Show columns:
+
+```bash
+SHOW COLUMNS FROM table_name;
+```
+
+Drop table:
+
+```bash
+DROP TABLE table_name;
+```
+
+### CRUD in MySQL
+
+#### Read
+
+SELECT
+
+```bash
+SELECT *
+FROM table
+WHERE column1 = 'some_text'
+ORDER BY column1 ASC;
+```
+
+#### Create
+
+INSERT
+
+```bash
+INSERT INTO table (col1, col2, col3)
+VALUES (val1, val2, val3);
+```
+
+#### Update
+
+UPDATE
+
+```bash
+UPDATE table
+SET col1 = 'this', col2 = 'that'
+WHERE id = 1;
+```
+
+#### DELETE
+
+DELETE
+
+```bash
+DELETE FROM table
+WHERE id = 1;
+```
+
+LIMIT 1; - good practice, but not strictly necessary
+
+```bash
+DELETE FROM subjects WHERE id=4 LIMIT 1;
+```
+
+### Relation Database Tables
+
+#### One-to-Many Relationships
+
+ex. One subject and many pages
+
+table: subjects
+id: 3
+menu_name: 'About Globe Bank'
+position: 1
+visible: TRUE
+
+table: pages
+id: 12
+subject_id: 3                   // FOREIGN KEY
+menu_name: 'History'
+position: 2
+visible: TRUE
+content: 'Founded in 1950...'
+
+The Foreign Key always belongs on the 'child' record - the one that 'belongs' to the other.
+
+Foreign keys ought to have an index on them as well. You can create the index at the same time that you create the table - or you can add it afterwards with ALTER
+
+```bash
+ALTER TABLE table
+ADD INDEX index_name (column);
+```
+
+Some peopl like to call it fk_name for foreign key.
+
