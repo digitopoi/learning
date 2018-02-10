@@ -785,3 +785,257 @@ ADD INDEX index_name (column);
 
 Some peopl like to call it fk_name for foreign key.
 
+# PHP and MySQL
+
+## Database APIs in PHP
+
+1. mysql: original MySQL API
+
+  - removed in PHP 7.0
+
+  - procedural interface (not object oriented)
+
+2. mysqli: MySQL 'improved' API
+
+3. PDO: PHP Data Objects
+
+  - not preconfigured for MySQL
+
+We'll be using the procedural (non-object oriented) msqli approach. 
+
+Very similar to the object oriented approach. We're just calling functions, whereas in the object oriented approach we're calling functions on an object. 
+
+mysqli_connect vs. $mysqli = new mysqli
+mysqli_connect_errno vs. $mysqli->connect_errno
+mysqli_connect_error vs. $mysqli->connect_error
+mysqli_real_escape_string vs. $mysqli->real_escape_string
+mysqli_query vs. $mysqli->query
+mysqli_fetch_assoc vs. $mysqli->fetch_assoc
+mysqli_close vs. $mysqli->close
+
+[Info about choosing between approaches](http://php.net/manual/en/mysqlinfo.api.choosing.php)
+
+## Connect to MySQL with PHP
+
+1. Create a database connection (like logging in)
+
+2. Perform a database query
+
+3. Use returned data (if any)
+
+4. Release returned data
+
+5. Close the database connection
+
+### Open and Close Connections to the Database
+
+OPEN:
+
+```php
+mysqli_connect($host, $user, $password, $database);
+```
+
+$host = location of the server we want to connect to (for us, in development, that's going to be localhost. If in production on a remote server = IP address of that machine)
+
+returns a **connection handle** as a result - we want to assign it to a variable and keep track of it so we can use it to make queries across its open connection.
+
+CLOSE:
+
+```php
+mysqli_close($connectionHandle)
+```
+
+Open MySQLi connections are automatically closed when PHP scripts finish execution.
+
+You don't **have** to explicitly close your connections, but it's recommended.
+
+### Create Database Files
+
+1. database.php - holds functions related to the database
+
+```php
+<?php
+
+    require('db_credentials.php');
+
+    function db_connect() {
+        $connection = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+        return $connection;
+    }
+
+    function db_disconnect($connection) {
+        if(isset($connection)) {
+            mysqli_close($connection);
+        }
+    }
+?>
+```
+
+2. db_credentials.php
+
+```php
+<?php
+
+    define("DB_SERVER", "localhost");
+    define("DB_USER", "bankdev");
+    define("DB_PASS", "bankdev");
+    define("DB_NAME", "globe_bank");
+
+?>
+```
+
+## Retrieve Data
+
+```php
+mysqli_query($connection, $query);
+```
+
+$connection - database connection
+
+$query - the actual SQL code that we want to run
+
+if we perform a select query, then MySQL is going to return a result set.
+
+if we create, update, delete, or some other MySQL command, it's going to return true or false.
+
+```php
+mysqli_free_result($result_set);
+```
+
+## Work with Retrieved Data
+
+### Return the results back from a result set as a standard array.
+
+```php
+mysqli_fetch_row($result);
+```
+
+-> ['1', 'About Globe Bank', '1', '1']
+
+Keys are integers.
+
+```php
+echo $subject[1];
+```
+
+Not ideal - easy to forget what value corresponds to what index position in the array that you're geting back.
+
+### Return the results back as an associative array
+
+```php
+mysqli_fetch_assoc($result);
+```
+
+-> ['id' => '1', 'menu_name' => 'About Globe Bank', 'position' => '1', 'visible' => '1']
+
+Keys are column names.
+
+```php
+echo $subject['menu_name'];
+```
+
+### Return both types of arrays
+
+Can pass in a constant to configure what it returns.
+
+```php
+mysqli_fetch_array($result);
+```
+
+### Return number of rows in a result set
+
+```php
+$count = mysqli_num_rows($result);
+```
+
+Could do this:
+
+```php
+for ($i = 0; $i < $count; $i++) {
+    $subject = mysqli_fetch_assoc($result);
+    echo $subject['menu_name'];
+}
+```
+
+But, mysqli_fetch_assoc automatically advances the pointer that's inside the result set. 
+
+Everytime you call it, it knows that it needs to fetch the next row, not the row that it just returned.
+
+We can use that automatic advancing feature to simplify the loop:
+
+```php
+$result = find_all_subjects();
+
+while ($subject = mysqli_fetch_assoc($result)) {
+    echo $subject['menu_name'];
+}
+```
+
+(while you're still able to grab a row, echo 'menu_name' column)
+
+### Error Handling
+
+#### Return the error code from the last call we made from the database
+
+```php
+mysqli_connect_errno();
+```
+
+#### Return a string description of the last connect error
+
+```php
+mysqli_connect_error();
+```
+
+## CRUD with PHP
+
+### Find a Single Record
+
+```php
+$sql = "SELECT * FROM subjects ";
+$sql .= "WHERE id='" . $id . "';";          // single quotes around id
+$result = mysqli_query($db, $sql);
+
+$subject = mysqli_fetch_assoc($result);
+```
+
+Best practice to have single quotes around ID here. Not necessary for SQL, but it does prevent a security problem.
+
+### Use Form Data to Create Records
+
+```sql
+INSERT INTO table (col1, col2, col3)
+VALUES (val1, val2, val3);
+```
+
+```php
+myqli_insert_id($connection);
+```
+
+### Use Form Data to Update Records
+
+```sql
+UPDATE table
+SET col1 = 'this', col2 = 'that'
+WHERE id = 1;
+```
+
+Updating a single record requires an id
+
+Usually from form data - and, you want to start the form with current data prepopulated
+
+Returns true or false
+
+### Delete a record
+
+```sql
+DELETE FROM table
+WHERE id = 1;
+```
+
+Requires an id
+
+Form is option; POST is best practice.
+
+Returns true or false.
+
