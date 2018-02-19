@@ -151,3 +151,29 @@ public class SamuraiContext : DbContext
     public DbSet<Battle> Battles { get; set; }
 }
 ```
+
+### Specifying the Data Provider and Connection String
+
+**No More Database Magic:** you must specify data provider and connection string
+
+Different ways to do this - one way is directly in the DbContext class (ok for demos and examples, not for real software):
+
+The first time EF Core instantiates this DbContext at runtime, it will trigger the OnConfiguring() method, learn that it should be using the SqlServer provider, and be aware of the connection string.
+
+```c#
+public class SamuraiContext : DbContext
+{
+    public DbSet<Samurai> Samurais { get; set; }
+    public DbSet<Quote> Quotes { get; set; }
+    public DbSet<Battle> Battles { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer(
+            "Server = (localdb)\\mssqllocaldb; Database = SamuraiAppData; Trusted_Connection = True; ");
+    }
+}
+```
+
+
+
