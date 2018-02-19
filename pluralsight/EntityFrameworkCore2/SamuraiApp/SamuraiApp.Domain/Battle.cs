@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SamuraiApp.Data
+namespace SamuraiApp.Domain
 {
     public class Battle
     {

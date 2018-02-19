@@ -72,3 +72,53 @@ Easier service replacement
 
 ## Creating a Data Model and Database with EF Core 2
 
+Samurai.cs
+
+```c#
+public class Samurai
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public List<Quote> Quotes { get; set; }
+    public int BattleId { get; set; }
+
+    public Samurai()
+    {
+        Quotes = new List<Quote>();
+    }
+}
+```
+
+Battle.cs
+
+```c#
+public class Battle
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public List<Samurai> Samurais { get; set; }
+}
+```
+
+Quote.cs
+
+```cs
+public class Quote
+{
+    public int Id { get; set; }
+    public string Text { get; set; }
+    public Samurai Samurai { get; set; }
+    public int SamuraiId { get; set; }
+}
+```
+
+## Adding Entity Framework Core NuGet Package
+
+Save time by bringing in the provider - which downloads dependencies as well
+
+```bash
+Install-Package Microsoft.EntityFrameworkCore.SqlServer
+```
+
