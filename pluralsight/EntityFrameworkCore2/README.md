@@ -72,6 +72,8 @@ Easier service replacement
 
 ## Creating a Data Model and Database with EF Core 2
 
+### Adding models
+
 Samurai.cs
 
 ```c#
@@ -114,7 +116,7 @@ public class Quote
 }
 ```
 
-## Adding Entity Framework Core NuGet Package
+### Adding Entity Framework Core NuGet Package
 
 Save time by bringing in the provider - which downloads dependencies as well
 
@@ -122,3 +124,30 @@ Save time by bringing in the provider - which downloads dependencies as well
 Install-Package Microsoft.EntityFrameworkCore.SqlServer
 ```
 
+### Creating the Data Model with EF Core
+
+The DbContext will provide all the logic that EF is going to be using to its change tracking and database interaction tasks.
+
+A DbContext needs to expose DbSet<>s which become wrappers to the different types that you'll interact with when using the context.
+
+How you define your DbContext is important to how EFCore treats your data at runtime as well as how it's able to interact with your database - and how you use your model when you're coding.
+
+Based on the relationships EF discovers in the classes, it will use its own conventions for how to infer the relationships.
+
+One-to-many relationship between Samurai and Quote.
+One-to-many relationshpi between Battle and Samurai.
+
+Also affects how EF Core infers the database schema - whether you're working with an existing database or you're going to let EF create the database based on the models.
+
+EF Core will presume the DbSet property names will match the table names.
+
+SamuraiContext.cs
+
+```c#
+public class SamuraiContext : DbContext
+{
+    public DbSet<Samurai> Samurais { get; set; }
+    public DbSet<Quote> Quotes { get; set; }
+    public DbSet<Battle> Battles { get; set; }
+}
+```
