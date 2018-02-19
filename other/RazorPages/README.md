@@ -24,3 +24,33 @@ _ViewImports.cshtml - contains Razor directives that are imported into each Razo
 
 _ValidationScriptsPartial.cshtml - provides a reference to jQuery validation scripts.
 
+## Adding Entity Framework Core NuGet packages
+
+### Method one - adding directly to .csproj file:
+
+```xml
+<DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+```
+
+### Method two - CLI:
+
+```bash
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
+```
+
+### Restore
+
+```bash
+dotnet restore
+```
+
+## Run First Migration and Update Database
+
+```bash
+dotnet ef migrations add InitialCreate
+```
+
+```bash
+dotnet ef database update
+```
+
