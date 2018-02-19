@@ -135,3 +135,60 @@ The PageModel base class has a ViewData dictionary that can be used to add data 
 Objects can be added using a key/value pattern.
 
 In the above example, the "Title" property is added to the ViewData dictionary.
+
+```html
+<a asp-page="/Index" class="navbar-brand>RpMovie</a>
+```
+
+The above anchor element is a Tag Helper (in this case, Anchor Tag Helper) that creates a link to the /Movies/Index Razor Page.
+
+In the Create.cshtml file, the Movie property has a BindProperty attribute. This allows the property to opt-in to model binding. When the Create form posts the form values, the ASP.NET Core runtime binds the posted values to the Movie model.
+
+```cs
+[BindProperty]
+public Movie Movie { get; set; }
+```
+
+The OnPostAsync() method is run when the page posts form data:
+
+```cs
+public async Task<IActionResult> OnPostAsync()
+{
+    if (!ModelState.IsValid)
+    {
+        return Page();
+    }
+
+    _context.Movie.Add(Movie);
+    await _context.SaveChangesAsync();
+
+    return RedirectToPage("./Index");
+}
+```
+
+If there are any model errors, the form is redisplayed, along with any form data posted.
+
+If there are no model errors, the data is saved and the browser is redirected to the Index page.
+
+Form helper tag (automatically includes an antiforgery token):
+
+```html
+<form method="post">
+```
+
+The scaffolding engine creates Razor markup for each field in the model (except the ID):
+
+```html
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="form-group">
+    <label asp-for="Movie.Title" class="control-label"></label>
+    <input asp-for="Movie.Title" class="form-control" />
+    <span asp-validation-for="Movie.Title" class="text-danger"></span>
+</div>
+```
+
+The Validation Tag Helpers (asp-validation-summary) and(asp-validation-for) display validation errors.
+
+The Label Tag Helper (asp-for) generates a label caption and for attribute for the Title property.
+
+The Input Tag Helper (asp-for) uses the DataAnnotations and produces HTML attributes needed for jQuery validation on the client-side.
