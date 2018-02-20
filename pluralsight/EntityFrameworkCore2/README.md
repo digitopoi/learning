@@ -521,3 +521,26 @@ Adding two filters to the logger:
 1. Only show SQL commands (avoid logging processing messages, connections, etc.).
 
 2. Define the level of detail - in this case, basic information to keep out information like stack traces and error messages
+
+### Inserting Simple Objects
+
+Tracking: the context is tracking the samurai when you call Add() on the DbSet
+
+```c#
+private static void InsertSamurai()
+{
+    var samurai = new Samurai { Name = "Julie" };
+    using (var context = new SamuraiContext())
+    {
+        context.Samurais.Add(samurai);
+        context.SaveChanges();
+    }
+}
+```
+
+context                 Examine each tracked object
+.Samurais               For each object, read the context's understanding of the state of the object
+.Add(samurai);          The add method let's EF know it's knew and EF works out SQL commands
+
+context                 
+.SaveChanges();         Execute the SQL statement on the database
