@@ -461,5 +461,63 @@ DEPENDENT:
 (Default) Optional child - EF Core (& database) will always allow a null child
 Required child - you'll need to handle the requirement in your business logic
 
+### Reverse Engineering an Existing Database
 
+Create DbContext & classes from database
 
+Updating model is currently not supported
+
+Transition to migrations is not pretty - links in resources
+
+Powershell command: scaffold-dbcontext
+
+```bash
+scaffold-dbcontext
+```
+
+## Interacting with the EF Core Data Model
+
+### Getting EF Core to Output SQL Logs
+
+Install Microsoft.Extensions.Logging.Console package
+
+Configure context to always output its logs to a console window.
+
+```c#
+public class SamuraiContext : DbContext
+{
+    public DbSet<Samurai> Samurais { get; set; }
+    public DbSet<Quote> Quotes { get; set; }
+    public DbSet<Battle> Battles { get; set; }
+
+    public static readonly LoggerFactory MyConsoleLoggingFactory        //  Add logger
+        = new LoggerFactory(new[]
+        {
+            new ConsoleLoggerProvider((category, level)
+                => category == DbLoggerCategory.Database.Command.Name
+                    && level == LogLevel.Information, true)
+        });
+
+    public SamuraiContext(DbContextOptions<SamuraiContext> options)
+        : base(options)
+    { }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<SamuraiBattle>()
+            .HasKey(s => new { s.SamuraiId, s.BattleId });
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder
+            .UseLoggerFactory(MyConsoleLoggingFactory);
+    }
+}
+```
+
+Adding two filters to the logger:
+
+1. Only show SQL commands (avoid logging processing messages, connections, etc.).
+
+2. Define the level of detail - in this case, basic information to keep out information like stack traces and error messages
