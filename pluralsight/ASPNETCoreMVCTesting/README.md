@@ -1,0 +1,88 @@
+# ASP.NET Core MVC Testing Fundamentals
+
+Jason Roberts
+
+## Introduction
+
+### The Benefits of Software Quality
+
+Happier end users - accomplish tasks with fewer problems
+
+Happier development team - less time spent fixing production errors (more time to develop new features, increased confidence making changes, increased system understanding, less unnecessary stress)
+
+Happier business owners - reduced cost / increased revenue, increased business reputation, reduced team member turnover
+
+### Why Automated Testing Over Manual Testing?
+
+Less error prone
+
+Free to run as often as required
+
+Find problems sooner (quick)
+
+Test code is source control - tests stay in sync
+
+Automated testing usually doesn't replace all manual human testing
+
+### Automated Testing in Context
+
+Automated testing fits into a broader context of quality and sit alongside other techniques:
+
+- Code Reviews
+
+- Pair programming
+
+- Good management
+
+- Motivated development team
+
+- Well-understood requirements
+
+- Good environment management / DevOps
+
+### Creating a Balanced Test Portfolio
+
+**test portfolio** - mix of different types of tests and the different parts of the system that are being tested.
+
+Categories:
+
+1. Functional UI - operate the user interface of the system as if a real end user was using it
+
+2. Subcutaneous - operate just under the user interface (ex. APIs that our frontend calls) - not testing UI logic
+
+3. Integration - a number of classes working together and also perhaps working with a real database or file system
+
+4. Unit Tests - test a class in isolation
+
+A well-balanced test portfolio verifies as much of the system as is required, with as little cost as possible (both creation and maintenance costs) while providing feedback as quickly as possible.
+
+### The Testing Pyramid
+
+Different types of tests in a hierarchy
+
+                                UI
+                            SUBCUTANEOUS
+                        INTEGRATION TESTING
+                    --------UNIT TESTING -------
+
+Implies that we have more unit tests than integration tests, more integration tests than subcutaneous tests, and the smallest number of UI tests
+
+The closer we get to the top of the pyramid, the slower our tests become - more complex to set up, more brittle to changes in the system, and the more broad they are in terms of the areas of the system that they exercise.
+
+What we can test in ASP.NET Core MVC:
+
+- View Rendering UU
+
+- Controller UUUII
+
+- Model UUUUUUI
+
+- HTTP API SSSS
+
+- HTML UI Ui Ui
+
+- Infrastructure UIII
+
+Different parts may have a different looking pyramid
+
+Have to access value and risk in the individual application - where is it most complicated and prone to breaking? If you create tests that don't add value - you're adding a cost to create and maintain them
