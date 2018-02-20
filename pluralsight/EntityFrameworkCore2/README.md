@@ -828,3 +828,78 @@ private static void MultipleDatabaseOperations()
     _context.SaveChanges();
 }
 ```
+
+#### Disconnected Updates
+
+So far, we've pulled down, modified, and saved data at once while one context instance remained in scope, tracking changes to the objects retrieved.
+
+Another scenario is when the user interface is disconnected from the back-end logic where the data is managed.
+
+```c#
+private static void QueryAndUpdateBattle_Disconnected()
+{
+    var battle = _context.Battles.FirstOrDefault();             // first connection
+    battle.EndDate = new DateTime(1560, 06, 30);
+
+    using (var newContextInstance = new SamuraiContext())       //  second connection
+    {
+        newContextInstance.Battles.Update(battle);
+        newContextInstance.SaveChanges();
+    }
+}
+```
+
+Instead of just passing the Id and the value to be changed in SQL, all values are changed in SQL - whether changed or not.
+
+The Update() method tells EF Core that **something** got changed - but, what exactly got changed is unclear.
+
+There are Third Party Libraries for tracking disconnected changes:
+
+Breeze
+Trackable Entities
+
+### Deleting Objects with EF Core
+
+DbContext can only delete objects it is aware of, i.e., already tracking
+
+```c#
+private static void DeleteWhileTracked()
+{
+    var samurai = _context.Samurais.FirstOrDefault(s => s.Name == "Kambei Shimada");
+    _context.Samurais.Remove(samurai);
+    _context.SaveChanges();
+}
+```
+
+Batch delete:
+
+```c#
+private static void DeleteMany()
+{
+    var samurais = _context.Samurais.Where(s => s.Name.Contains("o"));
+    _context.Samurais.RemoveRange(samurais);
+    //  alternate: _context.RemoveRange(samurais);
+    _context.SaveChanges();
+}
+```
+
+Querying the database to get the Id and then querying the database to delete the object is annoying.
+
+Why isn't there a Delete() method that works like the Find() method??
+
+If you hate the idea of an extra trip to the database - you might prefer to use raw SQL or stored procedures.
+
+```c#
+private static void DeleteUsingId(int samuraiId)
+{
+    var samurai = _context.Samurais.Find(samuraiId);
+    _context.Remove(samurai);
+    _context.SaveChanges();
+    //  alternate: call a stored procedure
+    _context.Database.ExecuteSqlCommand("exec DeleteById {0}, samuraiId);
+}
+```
+
+EF also has a command to execute raw SQL:
+
+DbSet.FromSql()
