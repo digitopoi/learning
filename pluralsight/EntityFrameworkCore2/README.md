@@ -175,5 +175,157 @@ public class SamuraiContext : DbContext
 }
 ```
 
+### Understanding EF Core Migrations
 
+If you evolve your data model - EF Core's interpretation of the translation to the database will change.
+
+Important to make sure that what EF Core **thinks** the database looks like is actually what the database looks like.
+
+#### Migrations Workflow
+
+1. Define Model Change
+
+2. Create a Migration File
+
+3. Apply Migration to DB or Script
+
+### Adding Your First Migration
+
+In order to create and execute migrations, we'll need access to the migration commands and to the migrations logic.
+
+Commands: EntityFrameworkCore.Tools
+
+Migrations Engine: EntityFrameworkCore.Design
+
+
+```bash
+Add-Migration Initial
+```
+
+### Inspecting Your First Migration
+
+ModelSnapshot - where EF keeps track of the current state of the model (when you add a new migration - EF reads the snapshot and compares it to the new version to determine what needs to be changed).
+
+Some notes on the migrations file:
+
+#### Up()
+
+Migrations read the configuration information that we supplied and knew that we targeted SQL Server:
+
+```c#
+.Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+```
+
+Creating tables and columns, specifying primary keys and foreign keys and constraints between the keys:
+
+```c#
+migrationBuilder.CreateTable(
+    name: "Battles",
+    columns: table => new
+    {
+        Id = table.Column<int>(nullable: false)
+            .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+        EndDate = table.Column<DateTime>(nullable: false),
+        Name = table.Column<string>(nullable: true),
+        StartDate = table.Column<DateTime>(nullable: false)
+    },
+    constraints: table =>
+    {
+        table.PrimaryKey("PK_Battles", x => x.Id);
+    })
+```
+
+Specifies indexes - by convention, creates Index for every Foreign Key found in the model:
+
+```c#
+migrationBuilder.CreateIndex(
+    name: "IX_Quotes_SamuraiId",
+    table: "Quotes",
+    column: "SamuraiId");
+
+migrationBuilder.CreateIndex(
+    name: "IX_Samurais_BattleId",
+    table: "Samurais",
+    column: "BattleId");
+```
+
+#### Down()
+
+Used if we ever want to "unwind" a migration
+
+### Using Migrations to Script or Directly Create the Database
+
+#### Generate Script from Migration
+
+More commmon on production database - generate script, let resident DB expert take care of applying it to production database.
+
+```bash
+Script-Migration
+```
+
+```sql
+IF OBJECT_ID(N'__EFMigrationsHistory') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+
+GO
+
+CREATE TABLE [Battles] (
+    [Id] int NOT NULL IDENTITY,
+    [EndDate] datetime2 NOT NULL,
+    [Name] nvarchar(max) NULL,
+    [StartDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_Battles] PRIMARY KEY ([Id])
+);
+
+GO
+
+CREATE TABLE [Samurais] (
+    [Id] int NOT NULL IDENTITY,
+    [BattleId] int NOT NULL,
+    [Name] nvarchar(max) NULL,
+    CONSTRAINT [PK_Samurais] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Samurais_Battles_BattleId] FOREIGN KEY ([BattleId]) REFERENCES [Battles] ([Id]) ON DELETE CASCADE
+);
+
+GO
+
+CREATE TABLE [Quotes] (
+    [Id] int NOT NULL IDENTITY,
+    [SamuraiId] int NOT NULL,
+    [Text] nvarchar(max) NULL,
+    CONSTRAINT [PK_Quotes] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Quotes_Samurais_SamuraiId] FOREIGN KEY ([SamuraiId]) REFERENCES [Samurais] ([Id]) ON DELETE CASCADE
+);
+
+GO
+
+CREATE INDEX [IX_Quotes_SamuraiId] ON [Quotes] ([SamuraiId]);
+
+GO
+
+CREATE INDEX [IX_Samurais_BattleId] ON [Samurais] ([BattleId]);
+
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20180219234455_Initial', N'2.0.1-rtm-125');
+
+GO
+```
+
+#### Update Database from Migration
+
+Notice in the Migration, there's no code to create the database - handled by the internal code inside of migrations - first checks to see if the database exists or not. If it doesn't exist, EF will create it. If you've created a script - you'll be responsible for creating the database yourself.
+
+The verbose flag lets you see everything the update-database command is doing.
+
+```bash
+Update-Database -verbose
+```
 
