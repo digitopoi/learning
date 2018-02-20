@@ -86,3 +86,61 @@ What we can test in ASP.NET Core MVC:
 Different parts may have a different looking pyramid
 
 Have to access value and risk in the individual application - where is it most complicated and prone to breaking? If you create tests that don't add value - you're adding a cost to create and maintain them
+
+## Testing Model Classes with xUnit.NET
+
+### Overview of xUnit.net
+
+[xUnit.net is a free,open source, community-focused unit testing tool for the .NET Framework. Written by the original inventor of NUnit v2, xUnit.net is the latest techonology for unit testing in C#, F#, VB.NET and other .NET languages](https://xunit.github.io)
+
+**testing framework** - provides all features for us to be able to write automated tests without having to worry too much about the plumbing.
+
+**test runner** - looks through our test code, it understands the testing framework that we're using and once it's executed our tests, provides the outcome - passed or failed.
+
+Features:
+
+- Attributes
+  - [Fact]
+  - [Theory]
+  - [InlineData]
+
+- Assertion Methods - to check whether the result of the code is as expected
+  - Assert.Equal()
+  - Assert.False()
+  - Assert.True()
+  - Assert.Throws()
+
+- Test Execution Lifecycle Management
+  - Test setup
+  - Test cleanup
+  - Shared test context/data/instances
+
+#### xUnit.net Test Runners
+
+Visual Studio Test Explorer
+
+Command line runner
+
+3rd Party runners (eg ReSharper)
+
+Continuous Integration (eg TeamCity)
+
+#### Example Test
+
+```c#
+[Theory]
+[InlineData(20)]
+[InlineData(19)]
+public void ReferYoungApplicantsWhoAreNotHighIncome(int age)
+{
+    var sut = new CreditCardApplicationEvaluator();
+
+    var application = new CreditCardApplication
+    {
+        GrossAnnualIncome = ExpectedIncomeThreshold - 1,
+        Age = age
+    };
+
+    Assert.Equal(CreditCardApplicationDecision.ReferredToHuman, sut.Evaluate(application));
+}
+```
