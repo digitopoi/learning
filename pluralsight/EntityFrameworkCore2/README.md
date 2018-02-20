@@ -795,3 +795,36 @@ Instead, use Find() - which finds the key - beneficial, because if it is still i
 var samurais = _context.Samurais.Find(2);
 ```
 
+### Updating Simple Objects
+
+```c#
+private static void RetrieveAndUpdateSamurai()
+{
+    var samurai = _context.Samurais.FirstOrDefault();
+    samurai.Name += "San";
+    _context.SaveChanges();
+}
+```
+
+#### Batch Update
+
+```c#
+private static void RetrieveAndUpdateMultipleSamurais()
+{
+    var samurais = _context.Samurais.ToList();
+    samurais.ForEach(s => s.Name += "San");
+    _context.SaveChanges();
+}
+```
+
+Using multiple operations:
+
+```c#
+private static void MultipleDatabaseOperations()
+{
+    var samurai = _context.Samurais.FirstOrDefault();
+    samurai.Name += "Hiro";
+    _context.Samurais.Add(new Samurai { Name = "Kikuchiyo" });
+    _context.SaveChanges();
+}
+```
