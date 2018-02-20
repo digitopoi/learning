@@ -694,3 +694,104 @@ foreach (var s in samurais)
 }
 ```
 
+### Filtering Data in Queries
+
+You probably don't want to always get all of the rows from a table.
+
+Query performance has improved greatly in EF Core (on surface not much different)
+
+```c#
+private static void MoreQueries()
+{
+    var samurais = _context.Samurais.Where(s => s.Name == "Sampson").ToList();
+}
+```
+
+Resulting SQL:
+
+```sql
+SELECT * FROM T
+WHERE T.Name = 'Sampson'
+```
+
+Usually, it won't be a hardcoded string - more than likely it will be a variable
+
+```c#
+var name = "Sampson"
+
+//
+.Where (s => s.Name == name)
+```
+
+Resulting SQL (parameter is created in SQL)
+
+```sql
+@parameter = 'Sampson'
+
+SELECT * FROM T
+WHERE T.Name = @parameter
+```
+
+#### LINQ To Entities Execution Methods
+
+ToList()                        ToListAsync()
+First()                         FirstAsync()
+FirstOrDefault()                FirstOrDefaultAsync()
+Single()                        SingleAsync()
+SingleOrDefault()               SingleOrDefaultAsync()
+Last()                          LastAsync()
+LastOrDefault()                 LastOrDefaultAsync()
+Count()                         CountAsync()
+LongCount()                     LongCountAsync()
+Min()                           MinAsync()
+Max()                           MaxAsync()
+Average()                       AverageAsync()
+
+Not a LINQ method, but a DbSet method that will execute:
+
+Find(keyValue)                  FindAsync(keyValue)
+
+#### Last()
+
+Last() and LastOrDefault() [and async] methods require that your query some sorting (ex. OrderBy()) in order to create SQL that will express the full query in the database.
+
+#### First() vs. Single()
+
+Single() expects that there will be only one result from the database matching the query - if more than one, it will throw an error.
+
+First() will select the first result that it finds
+
+#### __OrDefault()
+
+First(), Single(), Last() - if the result is empty, EF Core will throw an exception
+
+__OrDefault() - if the result is empty, EF Core will return null
+
+Most of the time, you'll want to use the __OrDefault() option and handle a null response rather than an exception
+
+#### Efficiency
+
+Instead of combining a Where and a FirstOrDefault:
+
+```c#
+var samurais = _context.Samurais.Where(s => s.Name == name).FirstOrDefault();
+```
+
+Instead, pass parameters to FirstOrDefault():
+
+```c#
+var samurais = _context.Samurais.FirstOrDefault(s => s.Name == name);
+```
+
+When finding an object by it's id, instead of FirstOrDefault():
+
+```c#
+var samurais = _context.Samurais.FirstOrDefault(s => s.Name == name);
+```
+
+Instead, use Find() - which finds the key - beneficial, because if it is still in memory - it won't query the database!
+
+```c#
+var samurais = _context.Samurais.Find(2);
+```
+
