@@ -415,3 +415,51 @@ Now EF Core will be able to build SQL for queries and database updates that resp
 
 #### One-to-one Relationship
 
+Add class to keep track of Samurai's secret name:
+
+```c#
+public class SecretIdentity
+{
+    public int Id { get; set; }
+    public string RealName { get; set; }
+    public int SamuraiId { get; set; }
+}
+```
+
+Add navigation property to define the secret identity:
+
+```c#
+public class Samurai
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public List<Quote> Quotes { get; set; }
+    public List<SamuraiBattle> SamuraiBattles { get; set; }
+    public SecretIdentity SecretIdentity { get; set; }
+
+    public Samurai()
+    {
+        Quotes = new List<Quote>();
+    }
+}
+```
+
+This is enough for EF Core to figure out the relationship between the entities.
+
+##### Required vs. Optional Relationships in One-to-One
+
+The dependent end of a one-to-one relationship is always optional as far as EF Core is concerned.
+
+There is no way to apply that constraint in the model or the database.
+
+If you want to require that a Samurai **always** has a secret identity - you'll have to do that in your own business logic.
+
+(Default) Required parent - a child cannot be orphaned
+Optional parent - you'll need to configure this mapping explicitly
+
+DEPENDENT:
+(Default) Optional child - EF Core (& database) will always allow a null child
+Required child - you'll need to handle the requirement in your business logic
+
+
+
