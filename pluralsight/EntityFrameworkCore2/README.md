@@ -329,3 +329,89 @@ The verbose flag lets you see everything the update-database command is doing.
 Update-Database -verbose
 ```
 
+### Adding Many-to-many and One-to-one Relationships
+
+#### Many-to-Many
+
+Rather than have a Samurai be in a single battle (as it is currently set up) - it should be possible for one samurai to fight in many battles and many samurais fight in a single battle.
+
+In relational databases - you have a join table to link the Samurais and the Battles
+
+In EF Core - you have a Join entity to link the two classes
+
+Samurai <---> Join Entity <---> Battles
+
+Join class - SamuraiBattle.cs:
+
+```c#
+public class SamuraiBattle
+{
+    public int SamuraiId { get; set; }
+    public Samurai Samurai { get; set; }
+    public int BattleId { get; set; }
+    public Battle Battle { get; set; }
+}
+```
+
+Add collection of SamuraiBattles to the Samurai class:
+
+```c#
+public class Samurai
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public List<Quote> Quotes { get; set; }
+    public List<SamuraiBattle> SamuraiBattles { get; set; }             //  Added
+
+    public Samurai()
+    {
+        Quotes = new List<Quote>();
+    }
+}
+```
+
+And the battle class:
+
+```c#
+public class Battle
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public List<SamuraiBattle> SamuraiBattles { get; set; }
+}
+```
+
+However, EF Core can't infer this relationship and won't be able to map to the database nor translate queries and updates
+
+It's possible to assist EF Core in understanding our intent when it's not following its own conventions.
+
+Using Fluent API mappings in DbContext's OnModelCreating() method that gets called internall when EF Core is working out what the data model should look like.
+
+Tell it that it has a key composed from its SamuraiId and BattleId properties
+
+```c#
+public class SamuraiContext : DbContext
+{
+    public DbSet<Samurai> Samurais { get; set; }
+    public DbSet<Quote> Quotes { get; set; }
+    public DbSet<Battle> Battles { get; set; }
+
+    public SamuraiContext(DbContextOptions<SamuraiContext> options)
+        : base(options)
+    { }
+
+    //  Helping out EF Core
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<SamuraiBattle>()
+            .HasKey(s => new { s.SamuraiId, s.BattleId });
+    }
+}
+```
+
+Now EF Core will be able to build SQL for queries and database updates that respect this many-to-many relationship.
+
+#### One-to-one Relationship
+
