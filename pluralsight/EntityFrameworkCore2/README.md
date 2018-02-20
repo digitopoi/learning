@@ -530,6 +530,7 @@ Tracking: the context is tracking the samurai when you call Add() on the DbSet
 private static void InsertSamurai()
 {
     var samurai = new Samurai { Name = "Julie" };
+
     using (var context = new SamuraiContext())
     {
         context.Samurais.Add(samurai);
@@ -544,3 +545,73 @@ context                 Examine each tracked object
 
 context                 
 .SaveChanges();         Execute the SQL statement on the database
+
+### Batching Commands When Saving
+
+EF Core supports bulk operations, which it didn't do in earlier versions of EF
+
+Could do two separate calls to Add() method
+
+Better to use AddRange() method to add multiple.
+
+```c#
+private static void InsertMultipleSamurais()
+{
+    var samurai = new Samurai { Name = "Julie" };
+    var samuraiSammy = new Samurai { Name = "Sampson" };
+
+    using (var context = new SamuraiContext())
+    {
+        context.Samurais.AddRange(samurai, samuraiSammy);
+        context.SaveChanges();
+    }
+}
+```
+
+could also pass them in as a list:
+
+```c#
+context.Samurais.AddRange(new List<Samurai> { samurai, samuraiSammy } );
+```
+
+You can add objects directly, without specifying the DbSet thanks to the fact that in EF Core the DbContext has the ability to figure out which DbSet and entity belongs to.
+
+Useful for adding, updating, or deleting a variety of objects that are different types.
+
+```c#
+private static void InsertMultipleDifferentObjects()
+{
+    var samurai = new Samurai { Name = "Oda Nobunaga" };
+
+    var battle = new Battle
+    {
+        Name = "Battle of Nagashino",
+        StartDate = new DateTime(1575, 06, 16),
+        EndDate = new DateTime(157, 06, 28)
+    };
+
+    using (var context = new SamuraiContext())
+    {
+        context.AddRange(samurai, battle);              //  Adding two types at once
+        context.SaveChanges();
+    }
+}
+```
+
+#### Batch Operation Batch Size
+
+Each database provider is responsible for setting specific limitations.
+
+The default for SQL Server is 1,000 commands in a batch.
+
+If there are more commands, EF Core will group them in sets based on the size that's specified 
+
+Size is configurable in the ModelBuilder:
+
+```c#
+protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+{
+    optionsBuilder
+        .UseSqlServer(connectionString, options => options.MaxBatchSize(150));
+}
+```
