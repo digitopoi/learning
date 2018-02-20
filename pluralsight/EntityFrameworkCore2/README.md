@@ -615,3 +615,82 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         .UseSqlServer(connectionString, options => options.MaxBatchSize(150));
 }
 ```
+
+### Querying Simple Objects
+
+```c#
+private static void SimpleSamuraiQuery()
+{
+    using (var context = new SamuraiContext())
+    {
+        var samurais = context.Samurais.ToList();
+    }
+}
+```
+
+ToList() is a LINQ execution method that will trigger the query to be executed.
+
+#### LINQ Methods vs Query Syntax
+
+LINQ Method:
+
+```c#
+context.Samurais.ToList();
+```
+
+LINQ Query Syntax:
+
+```c#
+(from s in context.Samurais select s).ToList();
+```
+
+LINQ Method:
+
+```c#
+context.Samurais
+    .Where(s => s.Name == "Julie")
+    .ToList();
+```
+
+LINQ Query Syntax
+
+```c#
+(from s in context.Samurais
+ where s.Name == "Julie"
+ select s).ToList();
+```
+
+An enumeration also triggers the query to be executed:
+
+```c#
+foreach (var samurai in context.Samurais)
+{
+    Console.WriteLine(samurai.Name);
+}
+```
+
+**Important to realize:** the database opens at the beginning of the execution of the foreach() and remains open until all of the results have been streamed back.
+
+If you start performing a lot of operations on each of the results - can cause side effects and performance problems
+
+```c#
+foreach (var s in context.Samurais) 
+{
+    RunSomeValidator(s.Name);
+    CallSomeService(s.Id);
+    GetSomeMoreDataBasedOn(s.Id);
+}
+```
+
+Usually better to go ahead and get all results into a list **and then** perform enumeration:
+
+```c#
+var samurais = context.Samurais.ToList();
+foreach (var s in samurais)
+{
+    RunSomeValidator(s.Name);
+    CallSomeService(s.Id);
+    GetSomeMoreDataBasedOn(s.Id);
+}
+```
+
