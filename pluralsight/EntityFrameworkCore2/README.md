@@ -1154,4 +1154,35 @@ _context.Samurais
 
 ### Modifying Related Data
 
- 
+#### Connected
+
+Eager load related data with Included(), then drilling into first quote in the collection, modify its text and SaveChanges()
+
+```c#
+private static void ModifyingRelatedDataWhenTracked()
+{
+    var samurai = _context.Samurais.Include(s => s.Quotes).FirstOrDefault();
+    samurai.Quotes[0].Text += " Did you hear that?";
+    _context.SaveChanges();
+}
+``` 
+
+#### Disconnected
+
+Entry() will focus specifically on the entry that you pass in and it will ignore anything else that might be attached to it.
+
+Then use the Entry's State property to set the state of that entry to Modified
+
+```c#
+private static void ModifyingRelatedDataWhenNotTracked()
+{
+    var samurai = _context.Samurais.Include(s => s.Quotes).FirstOrDefault();
+    var quote = samurai.Quotes[0];
+    quote += " Did you hear that?";
+    using (var newContext = new SamuraiContext())
+    {
+        newContext.Entry(quote).State = EntityState.Modified;
+        newContext.SaveChanges();
+    }
+}
+```
