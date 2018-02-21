@@ -1065,3 +1065,79 @@ _context.Samurais
 ```
 
 Include() **always** loads the entire set of related data - does not allow you to filter which related data is returned - but, you can still do that.
+
+### Projecting Related Data in Queries
+
+We use LINQ's Select() method to specify which properties of an object we want returned.
+
+If you're returning more than a single property, then you'll have to contain the new properties within a type.
+
+You can do that even if what you are projecting doesn't match an existing type - anonymous type. 
+
+```c#
+private static void ProjectSomeProperties()
+{
+    var someProperties = _context.Samurais.Select(s => new { s.Id, s.Name }).ToList();
+}
+```
+
+If you need to move the anonymous types outside of the method, you could cast them to a list of dynamic types.
+
+```c#
+private static void ProjectSomeProperties()
+{
+    var someProperties = _context.Samurais.Select(s => new { s.Id, s.Name }).ToList();
+    return someProperties.ToList<dynamic>();
+}
+```
+
+Or, you could create another class or a struct in your app and then project into that 
+
+```c#
+public struct IdAndName
+{
+    public int Id;
+    public string Name;
+
+    public IdAndName(int id, string name)
+    {
+        Id = id;
+        Name = name;
+    }
+}
+```
+
+You can also navigate into a related object without bringing back complete types.
+
+```c#
+var somePropertiesWithQuotes = _context.Samurais
+    .Select(s => new { s.Id, s.Name, s.Quotes.Count });         //  Count of Quotes instead of actual quotes
+    .ToList();
+```
+
+Can filter on a property:
+
+```c#
+var somePropertiesWithSomeQuotes = _context.Samurais
+            .Select(s => new { 
+                s.Id,
+                s.Name,
+                HappyQuotes = s.Quotes.Where(q => q.Text.Contains("happy"))
+            })
+            .ToList();
+```
+
+When you want functionality of Include() but need filtering.
+
+Bring back full samurais and filtered list of quotes:
+
+[This should work, but currently doesn't - should be fixed soon]
+
+```c#
+var samuraisWithHappyQuotes = context.Samurais
+    .Select(s => new {
+        Samurai = s,
+        Quotes = s.Quotes.Where(q => q.Text.Contains("happy"))
+    })
+    .ToList();
+```
