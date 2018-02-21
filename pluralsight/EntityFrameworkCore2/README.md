@@ -1141,3 +1141,17 @@ var samuraisWithHappyQuotes = context.Samurais
     })
     .ToList();
 ```
+
+### Using Related Data To Filter Objects
+
+Retrieving any samurai who has used 'happy' in a quote:
+
+```c#
+_context.Samurais
+    .Where(s => s.Quotes.Any(q => q.Text.Contains("happy")))
+    .ToList();
+```
+
+### Modifying Related Data
+
+ 
