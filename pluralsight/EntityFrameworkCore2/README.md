@@ -903,3 +903,165 @@ private static void DeleteUsingId(int samuraiId)
 EF also has a command to execute raw SQL:
 
 DbSet.FromSql()
+
+## Querying and Saving Related Data
+
+CRUD operations with data that is across relationships
+
+Easier to make the changes when EF Core is tracking the changes, but also important to know how to let EF Core know what to do with objects that it hasn't been tracking.
+
+Querying related data by including it in queries for the parent data or after the parent data is already in memory.
+
+Shaping query results with projectsions.
+
+Navigate through relationships when building queries as well as filtering and sorting data.
+
+### Inserting Related Data
+
+Creating a new parent/child graph - new Samurai object with a quote in its quote collection
+
+```c#
+private static void InsertNewPkFkGraph()
+{
+    var samurai = new Samurai
+    {
+        Name = "Kambei Shimada",
+        Quotes = new List<Quote>
+        {
+            new Quote { Text = "I've come to save you },
+            new Quote { Text = "I told you to watch out for the sharp sword! Oh well!" }
+        }
+    }
+    _context.Samurais.Add(samurai);
+    _context.SaveChanges();
+}
+```
+
+Adding related object to a pre-existing object (Connected)
+
+```c#
+private static void AddChildToExistingObjectWhileTracked()
+{
+    var samurai = _context.Samurais.First();
+    samurai.Quotes.Add(new Quote
+    {
+        Text = "I bet you're happy that I saved you!"
+    });
+    _context.SaveChanges();
+}
+```
+
+Adding related data to a pre-existing object (Disconnected)
+
+Foreign key is your friend!
+
+You can't use the samurai's DbSet Add method to add a samurai graph because the DbContext wasn't tracking the samurai.
+
+```c#
+private static void AddChildToExistingObjectWhileNotTracked()
+{
+    var samurai = _context.Samurais.First();
+    samurai.Quotes.Add(new Quote
+    {
+        Text = "Now that I saved you, will you feed me dinner?"
+    });
+    using (var newContext = new SamuraiContext())
+    {
+        // newContext.Samurais.Add(samurai);            //  NOPE
+    }
+}
+```
+
+Lerman's advice is to just avoid using the graph when the objects have different states - preferring to set the foreign key on the quote. 
+
+```c#
+private static void AddChildToExistingObjectWhileNotTracked(int samuraiId)
+{
+    var quote = new Quote
+    {
+        Text = "Now that I saved you, will you feed me dinner?"
+        SamuraiId = samuraiId
+    }
+    using (var newContext = new SamuraiContext())
+    {
+        newContext.Quotes.Add(quote);
+        newContext.SaveChanges();
+    }
+}
+```
+
+### Eager Loading Related Data
+
+**Eager loading**: include related objects in query
+
+Eager loading allows you to use the DbSet Include() method to retrieve data and related data in the same call.
+
+**Query projection**: define the shape of query results
+
+Fine-tune the shape of the data being returned
+
+**Explicit loading**: request related data of objects in memory
+
+Used in cases when you already have some data in memory and want to go back to the database and get some of its related data.
+
+**(Future version) Lazy Loading**: On-the-fly retrieval of related data
+
+Not currently supported in EF Core 2
+
+#### Eager Loading with the Include() Method
+
+Include() is a method of DbSet - lambda expression to define which navigation property to include
+
+```c#
+private static void EagerLoadSamuraiWithQuotes()
+{
+    var samuraiWithQuotes = _context.Samurais.Include(s => s.Quotes).ToList();
+}
+```
+
+You can filter what is returned and still retrieve
+
+```c#
+private static void EagerLoadSamuraiWithQuotes()
+{
+    var samuraiWithQuotes = _context.Samurais
+                                .Where(s => s.Name.Contains("Julie"))
+                                .Include(s => s.Quotes).ToList();
+}
+```
+
+Include is a DbSet Method - you can't put it after a FirstOrDefault() call, for example.
+
+#### Ways to build graphs with eager loading
+
+Include child objects
+
+```c#
+_context.Samurais
+    .Include(s => s.Quotes)
+```
+
+Include children and grandchildren
+
+```c#
+_context.Samurais
+    .Include(s => s.Quotes)
+    .ThenInclude(q => q.Translations)
+```
+
+Include just grandchildren
+
+```c#
+_context.Samurais
+    .Include(s => s.Quotes.Translates)
+```
+
+Include different children
+
+```c#
+_context.Samurais
+    .Include(s => s.Quotes)
+    .Include(s => s.SecretIdentity)
+```
+
+Include() **always** loads the entire set of related data - does not allow you to filter which related data is returned - but, you can still do that.
