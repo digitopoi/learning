@@ -6,13 +6,11 @@
 <head>
     <meta name="viewport" content="width=device-width"/>
     <title>Working with Visual Studio</title>
-    <link href="~/css/bundle.min.css" rel="stylesheet" />
-    <script src="~/js/bundle.min.js"></script>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
-<body>
-    <h3>Products</h3>
-    <p>Request Time: @DateTime.Now.ToString("HH:mm:ss")</p>
-    <table>
+<body class="p-1">
+    <h3 class="text-center">Products</h3>
+    <table class="table table-bordered table-striped">
         <thead>
             <tr><td>Name</td><td>Price</td></tr>
         </thead>
@@ -26,5 +24,10 @@
             }
         </tbody>
     </table>
+    <div class="text-center">
+        <a class="btn btn-primary" asp-action="AddProduct">
+            Add New Product
+        </a>
+    </div>
 </body>
 </html>
