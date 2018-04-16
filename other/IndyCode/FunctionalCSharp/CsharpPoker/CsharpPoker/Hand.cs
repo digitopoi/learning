@@ -47,13 +47,14 @@ namespace CsharpPoker
 
         private bool HasFullHouse() => HasThreeOfAKind() && HasPair();
 
-        //  The Zip LINQ method operates on two collections at once
-        //  The second instance is offset by one, n + 1 is compared with the next value in the offset collection
-        //  If all evaluate to True, the collection is a straight
-        private bool HasStraight() => cards.OrderBy(card => card.Value)
-            .Zip(cards.OrderBy(card => card.Value).Skip(1),
-                                      (n, next) => n.Value + 1 == next.Value)
-            .All(value => value /* true */ );
+        //  The Zip and Skip LINQ methods are replaced by a custom extension method, SelectConsecutive
+        //  Select consecutive works like LINQ Select, except it can evaluate two consecutive items in a collection
+        //  This is done using a yield keyword, the source code is in EvalExtensions.cs
+        private bool HasStraight() =>
+            cards
+                .OrderBy(card => card.Value)
+                .SelectConsecutive((n, next) => n.Value + 1 == next.Value)
+                .All(value => value);
 
         private bool HasStraightFlush() => HasStraight() && HasFlush();
     }
