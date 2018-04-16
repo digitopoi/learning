@@ -200,3 +200,26 @@ Constructor with expression bodied member:
 ```cs
 public Card(CardValue value, CardSuit suit) => (Value, Suit) = (value, suit);
 ```
+
+Concurrent Dictionary
+
+  - AddOrUpdate() - is a void method that mutates the collection
+                  - does so in a threadsafe way
+                  - if there is a duplicates, it handles it according to what you tell it to do:
+
+```cs
+var dict = new ConcurrentDictionary<CardValue, int>();
+
+foreach (var card in cards)
+{
+    dict.AddOrUpdate(card.Value, 1, (cardValue, quantity) => ++quantity);
+}
+
+return dict;
+```
+
+KEY                 VALUE
+Seven               1
+Ten                 1
+Five                2
+King                1
