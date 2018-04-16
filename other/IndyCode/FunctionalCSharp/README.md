@@ -26,9 +26,61 @@ Readability, maintainability
 
 An object whose state cannot be modified after it is created, lowering the risk of side-effects.
 
+BEFORE:
+
+```cs
+public class Rectangle
+{
+    public int Length { get; set; }
+    public int Height { get; set; }
+
+    public void Grow(int length, int height)
+    {
+        Length += length;
+        Height += height;
+    }
+}
+
+Rectangle r = new Rectangle();
+r.Length = 5;
+r.Height = 10;
+r.Grow(10, 10);
+//  r.Length is 15, r.Height is 20, same instance of r
+```
+
+AFTER:
+
+```cs
+public class ImmutableRectangle
+{
+    int Length { get; }
+    int Height { get; }
+
+    public ImmutableRectangle(int length, int height)
+    {
+        Length = length;
+        Height = height;
+    }
+
+    public ImmutableRectangle Grow(int length, int height) =>
+        new ImmutableRectangle(Length + length, Height + height)
+}
+
+ImmutableRectangle r = new ImmutableRectangle(5, 10);
+
+r = r.Grow(10, 10);
+//  r.Length is 15, r.Height is 20, is a new instance of r
+```
+
 ### Func Delegates
 
 Func Delegates encapsulate a method. When declaring a Func, input and output parameters are specified as T1-T16 and TResult.
+
+**Func<TResult>** - matches a method that takes no arguments, and returns value of type **TResult**.
+
+**Func<T, TResult>** - matches a method that takes an argument of type `T`, and returns value of type `TResult`.
+
+**Func<T1, T2, TResult>** - 
 
 ### Higher Order Functions
 
