@@ -80,9 +80,23 @@ Func Delegates encapsulate a method. When declaring a Func, input and output par
 
 **Func<T, TResult>** - matches a method that takes an argument of type `T`, and returns value of type `TResult`.
 
-**Func<T1, T2, TResult>** - 
+**Func<T1, T2, TResult>** - matches a method that takes arguments of type `T1` and `T2`, and returns a value of type `TResult`.
 
-### Higher Order Functions
+**Func<T1, T2, ..., TResult>** - and so on up to 16 arguments, and returns a value of type `TResult`.
+
+```cs
+Func<int, int> addOne = n => n + 1;
+Func<int, int, int> addNums = (x, y) => x + y;
+Func<int, bool> isZero = n => n == 0;
+
+Console.WriteLine(addOne(5));               //  6
+Console.WriteLine(isZero(addNums(-5, 5)));  //  True
+
+int[] a = { 0, 1, 0, 3, 4, 0 };
+Console.WriteLine(a.Count(isZero));         //  3
+```
+
+### Higher Order Functions / Function as Data
 
 A function that accepts another function as a parameter, or returns another function.
 
@@ -96,11 +110,73 @@ Expressions produce a result without mutating state.
 
 - ex. ternary operators
 
+STATEMENT:
+
+```cs
+public static string GetSalutation(int hour)
+{
+    string salutation;  //  placeholder value
+    if (hour < 12)
+        salutation = "Good Morning"
+    else
+        salutation = "Good Afternoon";
+
+    return salutation;  //  return mutated variable
+}
+```
+
+EXPRESSION:
+
+```cs
+public static string GetSalutation(int hour) =>
+    hour < 12 ? "Good Morning" : "Good Afternoon";
+```
+
 ### Method Chaining (~Pipelines)
 
-C# lacks Pipeline syntax - instead, we use extension methods
+C# lacks Pipeline syntax - instead, we use extension methods.
+
+```cs
+string str = new StringBuilder()
+    .Append("Hello")
+    .Append("World")
+    .ToString()
+    .TrimEnd()
+    .ToUpper();
+
+//  HELLO WORLD
+```
+
+```cs
+Html.Kendo()
+    .Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(product => product.ProductID);
+        columns.Bound(product => product.ProductName);
+        columns.Bound(product => product.UnitsInStock);
+    })
+
+//  Render HTML Data Grid
+```
 
 ### Extension Methods
+
+Extension methods are a great way to extend method chains and add functionality to a class.
+
+```cs
+//  Extends the StringBuilder class to accept a predicate
+public static StringBuilder AppendWhen(this StringBuilder sb, string value, bool predicate) =>
+    predicate ? sb.Append(value) : sb;
+
+//  usage
+string htmlButton = new StringBuilder()
+    .Append("<button")
+    .AppendWhen(" disabled", isDisabled)
+    .Append(">Click me</button>")
+    .ToString();
+```
 
 * Zip LINQ - lookup later
 

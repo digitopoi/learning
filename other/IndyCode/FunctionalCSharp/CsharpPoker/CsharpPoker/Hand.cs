@@ -23,9 +23,11 @@ namespace CsharpPoker
         //  then shortened to an expression-bodied member.
         public HandRank GetHandRank() =>
             HasRoyalFlush() ? HandRank.RoyalFlush :
+            HasStraightFlush() ? HandRank.StraightFlush :
+            HasStraight() ? HandRank.Straight :
             HasFlush() ? HandRank.Flush :
             HasFullHouse() ? HandRank.FullHouse :
-            HasFourOfAKind() ? HandRank.ThreeOfAKind :
+            HasFourOfAKind() ? HandRank.FourOfAKind :
             HasThreeOfAKind() ? HandRank.ThreeOfAKind :
             HasPair() ? HandRank.Pair :
             HandRank.HighCard;
@@ -45,5 +47,14 @@ namespace CsharpPoker
 
         private bool HasFullHouse() => HasThreeOfAKind() && HasPair();
 
+        //  The Zip LINQ method operates on two collections at once
+        //  The second instance is offset by one, n + 1 is compared with the next value in the offset collection
+        //  If all evaluate to True, the collection is a straight
+        private bool HasStraight() => cards.OrderBy(card => card.Value)
+            .Zip(cards.OrderBy(card => card.Value).Skip(1),
+                                      (n, next) => n.Value + 1 == next.Value)
+            .All(value => value /* true */ );
+
+        private bool HasStraightFlush() => HasStraight() && HasFlush();
     }
 }

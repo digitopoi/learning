@@ -130,5 +130,31 @@ namespace CsharpPoker.Tests
 
             hand.GetHandRank().Should().Be(HandRank.FullHouse);
         }
+
+        [Fact]
+        public void CanScoreStraight()
+        {
+            var hand = new Hand();
+            hand.Draw(new Card(CardValue.Ten, CardSuit.Clubs));
+            hand.Draw(new Card(CardValue.Jack, CardSuit.Spades));
+            hand.Draw(new Card(CardValue.Queen, CardSuit.Spades));
+            hand.Draw(new Card(CardValue.King, CardSuit.Hearts));
+            hand.Draw(new Card(CardValue.Ace, CardSuit.Spades));
+
+            hand.GetHandRank().Should().Be(HandRank.Straight);
+        }
+
+        [Fact]
+        public void CanScoreStraightUnordered()
+        {
+            var hand = new Hand();
+            hand.Draw(new Card(CardValue.Ace, CardSuit.Spades));
+            hand.Draw(new Card(CardValue.Queen, CardSuit.Clubs));
+            hand.Draw(new Card(CardValue.Jack, CardSuit.Spades));
+            hand.Draw(new Card(CardValue.Ten, CardSuit.Spades));
+            hand.Draw(new Card(CardValue.King, CardSuit.Hearts));
+
+            hand.GetHandRank().Should().Be(HandRank.Straight);
+        }
     }
 }
