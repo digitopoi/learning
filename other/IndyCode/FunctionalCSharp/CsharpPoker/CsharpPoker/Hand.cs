@@ -10,52 +10,25 @@ namespace CsharpPoker
     {
         private readonly List<Card> cards = new List<Card>();
 
-        public IEnumerable<Card> Cards { get { return cards; } }
+        public IEnumerable<Card> Cards => cards;
 
-        public void Draw(Card card)
-        {
-            cards.Add(card);
-        }
+        public void Draw(Card card) => cards.Add(card);
 
-        public Card HighCard()
-        {
-            return cards.Aggregate((highCard, nextCard) => nextCard.Value > highCard.Value ? nextCard : highCard);
+        public Card HighCard() =>
+            cards.Aggregate((highCard, nextCard) => nextCard.Value > highCard.Value ? nextCard : highCard);
 
-            //  OrderBy is also valid, but could use more resources than Aggregate:
-            // return cards.OrderBy(c => c.Value).Last();
-        }
+        //  Optional
+        //  The return early pattern can be replaced with ternary operators
+        //  then shortened to an expression-bodied member.
+        public HandRank GetHandRank() =>
+            HasRoyalFlush() ? HandRank.RoyalFlush :
+            HasFlush() ? HandRank.Flush :
+            HandRank.HighCard;
 
-        public HandRank GetHandRank()
-        {
-            if (HasRoyalFlush()) return HandRank.RoyalFlush;
-            if (HasFlush()) return HandRank.Flush;
-            return HandRank.HighCard;
-        }
+        private bool HasFlush() =>
+            cards.All(c => cards.First().Suit == c.Suit);
 
-        //  A LINQ All method combined with First can check if all suits are the sam value
-        private bool HasFlush()
-        {
-            return cards.All(c => cards.First().Suit == c.Suit);
-        }
-
-        //  A LINQ All method can determine if all cards are greater than Nine or [Ten, Jack, Queen, King, Ace ]
-        public bool HasRoyalFlush()
-        {
-            return HasFlush() && cards.All(c => c.Value > CardValue.Nine);
-        }
-    }
-
-    public enum HandRank
-    {
-        HighCard,
-        Pair,
-        TwoPair,
-        ThreeOfAKind,
-        Straight,
-        Flush,
-        FullHouse,
-        FourOfAKind,
-        StraightFlush,
-        RoyalFlush
+        public bool HasRoyalFlush() =>
+            HasFlush() && cards.All(c => c.Value > CardValue.Nine);
     }
 }
