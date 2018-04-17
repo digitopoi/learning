@@ -1,5 +1,19 @@
 # Going All In With Fuctional C# - Ed Charbeneau
 
+`In this workshop attendees will learn about functional C# by building a poker scoring game using C# 7.1 features. We’ll learn what new features were added in C# 7.1 to support functional programming. The pros/cons of functional vs. imperative programming will be explored to understand the strengths of each style.`
+
+`In this workshop we’ll learn:`
+
+Immutable Types
+Basic LINQ concepts
+Advanced LINQ concepts (Yield)
+Func Delegates
+Expression Bodied Members
+Extension methods and pipe-lining
+Thread Safe Collections
+Tuples
+This is a rapid fire workshop using a poker scoring kata. We’ll learn at an accelerated pace with challenge based intervals with solutions given at the end of each interval. We’ll use these challenges to compare methodologies and reveal that we can tackle one problem in many ways using code. In the end we’ll reveal that using a mix of functional and imperative programming can tackle most challenges in a single line of code.
+
 ## Functional Programming
 
 Imperative programming is dependent on state. Functional programming aims to be less dependent.
