@@ -6,7 +6,7 @@
 
 [GitHub](https://github.com/EdCharbeneau/FiltersAndRules)
 
-[Article](goo.gl/kAM05P)
+[Article](https://www.red-gate.com/simple-talk/dotnet/.net-framework/giving-clarity-to-linq-queries-by-extending-expressions/)
 
 ### Entity Framework and LINQ
 
