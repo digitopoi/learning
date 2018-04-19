@@ -206,3 +206,89 @@ In this course, our focus will be on code first so we can master the fundamental
 
 ## Fundamentals of Unit Testing
 
+### Characteristics of Good Unit Tests
+
+#### Unit tests are first-class citizens
+
+They're as important as the production code.
+
+#### All of the best practices apply to unit tests (clean, readable, and maintainable).
+
+Each test should have a single responsibility and, ideally, be less than 10 lines of code.
+
+One reason people fail with unit tests is because their tests are messy - large, fat test methods that are unmaintainable.
+
+Refactor unit tests as necessary.
+
+#### No logic
+
+No conditional statements, loops, foreach, etc.
+
+If you write logic in your tests - it's possible you will make a mistake - and you will think the mistake is in the source code.
+
+#### Isolated
+
+Each test should be written as if it's the only test in the project.
+
+Test methods should not call each other and they should not assume any state created by another test.
+
+#### Not Too Specific or General
+
+If they are too general - they may not give you much confidence your source code is working.
+
+### What To Test
+
+Testable code is clean - clean code is testable.
+
+Test the **outcome** of a method.
+
+We generally have two types of methods:
+
+1. Queries - return some value
+
+2. Commands - performs an action - often changes the state of an object in memory, writing to a database, calling a web service, sending a message, etc. May return a value as well.
+
+For a query method - your unit test should verify that the method is returning the right value. You should test all of the execution paths.
+
+For a command method - if chaning state of an object - you should check if the given object is now in the right state. If talking to a resource like a database or web service - you should verify that the class under test is making the right call to the external dependencies.
+
+### What Not To Test
+
+#### Don't test language features
+
+If you have a class that is mainly a property bag - no need to test the properties.
+
+#### Don't test 3rd-party code
+
+You should assume they're properly tested and you should only test your code.
+
+### Organizing Tests
+
+Have a separate project to store the unit tests. Separate unit tests and integration tests.
+
+ex. `TestNinja` --> `TestNinja.UnitTests`
+
+Inside of the unit test project - you will often have a separate test class for each class in your source code.
+
+ex. `Reservation` --> `ReservationTests`
+
+For each method in the class you're testing, you should have one or more test methods.
+
+#### How many tests do you need?
+
+It depends on what you're testing.
+
+Generally: `Number of Tests >= Number of Execution Paths`
+
+### Naming Tests
+
+The name of your tests should clearly specify the business rule you're testing.
+
+`[MethodName]_[Scenario]_[ExpectedBehavior]`
+
+If your method has many tests - you can extract it into a separate test class.
+
+`CanBeCancelledBy()` -> `Reservation_CanBeCancelledByTests
+
+### Writing a Simple Unit Test
+
