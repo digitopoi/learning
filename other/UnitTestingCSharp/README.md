@@ -208,6 +208,10 @@ In this course, our focus will be on code first so we can master the fundamental
 
 ### Characteristics of Good Unit Tests
 
+#### Trustworthy
+
+Covered in detail later in the tutorial. A test we can rely upon.
+
 #### Unit tests are first-class citizens
 
 They're as important as the production code.
@@ -449,3 +453,25 @@ public void Max_WhenCalled_ReturnTheGreaterArgument(int a, int b, int expectedRe
     Assert.That(result, Is.EqualTo(expectedResult));
 }
 ```
+
+### Ignoring Tests
+
+In the real world, as you modify your code, it is possible you may break one or more tests. When you're new to unit testing, you may think "these tests are getting in the way, slowing me down, we should delete them."
+
+This is a bad approach - because, there was a reason for you to write those tests - so we can deploy and refactor the code with more confidence.
+
+But, this will show you how to temporarily disable a test so you can focus on some work somewhere else and then get to fix that test in the future.
+
+In NUnit we have an attribute called `Ignore` - takes an argument that is the reason we want to ignore the test.
+
+### Writing Trustworthy Tests
+
+One characteristic of good unit tests.
+
+A *trustworthy test** is a test that we can rely upon - if the test passes, you know your code is working and if it fails, you know there is something wrong with the source code.
+
+#### How can we write trustworthy tests?
+
+1. Test-driven development
+
+2. Playing with what the method you're testing returns. After your tests pass - go into the source code and make a small change that is supposed to make the test pass and verify that your test now fails.
