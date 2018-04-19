@@ -183,3 +183,26 @@ Assert.That(result == true);        //  NUnit alternative
 ### Test Driven Development (TDD)
 
 With TDD you write your tests before writing the production code
+
+1. Write a failing test - fails because you don't have any application code to make it pass
+
+2. Write the simplest code to make the test pass. (You don't want to over-engineer here)
+
+3. Refactor the code if necessary
+
+Repeat these steps until you build a complete feature.
+
+#### Benefits of TDD
+
+- Ensures your source code is testable immediately
+
+- Full coverage by tests - refactor and deploy with confidence
+
+- Simpler implementation, less chance of over-engineering or making the solution more complex than necessary
+
+Sometimes, in practice, TDD may get really complex and slow you down.
+
+In this course, our focus will be on code first so we can master the fundamentals.
+
+## Fundamentals of Unit Testing
+
