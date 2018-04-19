@@ -292,3 +292,99 @@ If your method has many tests - you can extract it into a separate test class.
 
 ### Writing a Simple Unit Test
 
+Method:
+
+```cs
+public int Add(int a, int b)
+{
+    return a + b;
+}
+```
+
+Only one execution path that needs to be tested. Because there is only one execution path - only one unit test and we can name the scenario generically (`WhenCalled`):
+
+```cs
+[Test]
+public void Add_WhenCalled_ReturnTheSumOfArguments()
+{
+    var math = new Math();
+
+    var result = math.Add(1, 2);
+
+    Assert.That(result, Is.EqualTo(3));
+}
+```
+
+### Black Box Testing
+
+Method:
+
+```cs
+public int Max(int a, int b)
+{
+    return (a > b) ? a : b;
+}
+```
+
+There are two execution paths here - dependent upon `(a > b)`.
+
+We started by thinking about the existing implementation of the method - good approach to get started - but, it's not enough.
+
+When you write your tests based on the existing implementation, it is possible that the existing implementation has problems.
+
+The best way to write tests is to think of them as a black box. Let's imagine that we don't know what is inside the `Max()` method.
+
+There is a third execution path that is not considered by the implementation - `a` and `b` are equal.
+
+Write out tests without implementation to make sure you don't forget what you need to implement:
+
+```cs
+[Test]
+public void Max_FirstArgIsGreater_ReturnTheFirstArgument()
+{
+}
+
+[Test]
+public void Max_SecondArgIsGreater_ReturnTheSecondArgument()
+{
+}
+
+[Test]
+public void Max_ArgumentsAreEqual_ReturnTheSameArgument()
+{
+}
+```
+
+Implement the tests:
+
+```cs
+[Test]
+public void Max_FirstArgIsGreater_ReturnTheFirstArgument()
+{
+    var math = new Math();
+
+    var result = math.Max(2, 1);
+
+    Assert.That(result, Is.EqualTo(2));
+}
+
+[Test]
+public void Max_SecondArgIsGreater_ReturnTheSecondArgument()
+{
+    var math = new Math();
+
+    var result = math.Max(1, 2);
+
+    Assert.That(result, Is.EqualTo(2));
+}
+
+[Test]
+public void Max_ArgumentsAreEqual_ReturnTheSameArgument()
+{
+    var math = new Math();
+
+    var result = math.Max(1, 1);
+
+    Assert.That(result, Is.EqualTo(1));
+}
+```
