@@ -156,3 +156,30 @@ public bool CanBeCancelledBy(User user)
     return (user.IsAdmin || MadeBy == user);
 }
 ```
+
+### Using NUnit In Visual Studio
+
+Install NuGet packages:
+
+```cmd
+Install-Package NUnit
+Install-Package NUnit3TestAdapter
+```
+
+The Test Adapter is to run NUnit tests inside Visual Studio.
+
+```cs
+[TestClass]                         //  MSTest
+[TestFixture]                       //  NUnit
+
+[TestMethod]                        //  MSTest
+[Test]                              //  NUnit
+
+Assert.IsTrue(result)               //  MSTest, NUnit
+Assert.That(result, Is.True);       //  NUnit alternative (more readable)
+Assert.That(result == true);        //  NUnit alternative
+```
+
+### Test Driven Development (TDD)
+
+With TDD you write your tests before writing the production code
