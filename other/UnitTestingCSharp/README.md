@@ -1,6 +1,6 @@
 # Unit Testing for C# Developers
 
-## Introduction
+## INTRODUCTION
 
 ### What is Automated Testing
 
@@ -204,7 +204,7 @@ Sometimes, in practice, TDD may get really complex and slow you down.
 
 In this course, our focus will be on code first so we can master the fundamentals.
 
-## Fundamentals of Unit Testing
+## FUNDAMENTALS OF UNIT TESTING
 
 ### Characteristics of Good Unit Tests
 
@@ -475,3 +475,73 @@ A *trustworthy test** is a test that we can rely upon - if the test passes, you 
 1. Test-driven development
 
 2. Playing with what the method you're testing returns. After your tests pass - go into the source code and make a small change that is supposed to make the test pass and verify that your test now fails.
+
+## CORE UNIT TESTING TECHNIQUES
+
+### Testing Strings
+
+Method:
+
+```cs
+public string FormatAsBold(string content)
+{
+    return $"<strong>{content}</strong>";
+}
+```
+
+Test stub:
+
+```cs
+[Test]
+public void FormatAsBold_WhenCalled_Should_EncloseStringWithStrongElement()
+{
+    var formatter = new HtmlFormatter();
+
+    var result = formatter.FormatAsBold("abc");
+
+    //  Different ways to Assert
+}
+```
+
+Assertions:
+
+```cs
+//  Specific - verifying the exact string we expect
+Assert.That(result, Is.EqualTo("<strong>abc</strong>"));
+
+//  Too general
+Assert.That(result, Does.StartWith("<strong>"));
+
+//  General, but covered:
+Assert.That(result, Does.StartWith("<strong>"));
+Assert.That(result, Does.EndWith("</strong>"));
+Assert.That(result, Does.Contain("abc"));
+```
+
+In this case, the specific solution is the best because what comes out of the method is important. We want to make sure the string is properly formatted.
+
+But, sometimes your message might return an error message - you don't want to write specific assertions because you might modify it in the future.
+
+With strings, often you want your tests to be a little more general because they can break easily if they are too specific.
+
+By default, these assertions with strings are case sensitive. If you want to disable that, you can use the `IgnoreCase` property.
+
+```cs
+Assert.That(result, Is.EqualTo("<strong>abc</strong>").IgnoreCase);
+```
+
+### Testing Arrays and Collections
+
+### Testing the Return Types of Methods
+
+### Testing Void Methods
+
+### Testing Methods that Throw Exceptions
+
+### Testing Methods that Raise an Event
+
+### Testing Private Methods
+
+### Code Coverage
+
+### Testing in the Real-World
