@@ -532,6 +532,52 @@ Assert.That(result, Is.EqualTo("<strong>abc</strong>").IgnoreCase);
 
 ### Testing Arrays and Collections
 
+Method:
+
+```cs
+public IEnumerable<int> GetOddNumbers(int limit)
+{
+    for (var i = 0; i <= limit; i++)
+        if (i % 2 != 0)
+            yield return i;
+}
+```
+
+Test (of one scenario):
+
+```cs
+[Test]
+public void GetOddNumbers_LimitIsGreaterThanZero_ReturnOddNumbersUpToLimit()
+{
+    var result = _math.GetOddNumbers(5);
+
+    //  Assertions
+}
+```
+
+Assertions:
+
+```cs
+//  Most General
+Assert.That(result, Is.Not.Empty);
+
+//  More Specific
+Assert.That(result.Count(), Is.EqualTo(3));
+
+//  More Specific
+Assert.That(result, Does.Contain(3));
+
+//  Specific
+Assert.That(result, DoesContain(1));
+Assert.That(result, DoesContain(3));
+Assert.That(result, DoesContain(5));
+
+//  Cleaner way to write the above specific Assert
+Assert.That(result, Is.EquivalentTo(new[] { 1, 3, 5 }));
+```
+
+Could also test for order - depending on the requirements.
+
 ### Testing the Return Types of Methods
 
 ### Testing Void Methods
