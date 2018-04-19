@@ -388,3 +388,41 @@ public void Max_ArgumentsAreEqual_ReturnTheSameArgument()
     Assert.That(result, Is.EqualTo(1));
 }
 ```
+
+### Set Up and Tear Down
+
+In our above tests - each test is in isolation - each method is relying on a new instance of the `Math` class. This is extremely important.
+
+In each test, you want to start with a fresh, clean state.
+
+You want to ensure another test method doesn't change the state and leak into another test.
+
+However, it is a bit redundant code-wise. In this case, it's not a big deal because our tests are small and it's only a single line of code.
+
+In `NUnit` - there are two special attributes: `SetUp` and `TearDown`.
+
+We can create a method and decorate it with the `SetUp` attribute - the NUnit test runner will call that method before running each test.
+
+NUnit will call the method decorated with the `TearDown` attribute after the test executes. We won't use the `TearDown` attribute - because, this is often used with integration tests (you may create some data in your database, for example).
+
+```cs
+private Math _math;
+
+[SetUp]
+public void SetUp()
+{
+    _math = new Math();
+}
+```
+
+And, refactor the tests:
+
+```cs
+[Test]
+public void Add_WhenCalled_ReturnTheSumOfArguments()
+{
+    var result = _math.Add(1, 2);
+
+    Assert.That(result, Is.EqualTo(3));
+}
+```
