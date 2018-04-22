@@ -578,7 +578,74 @@ Assert.That(result, Is.EquivalentTo(new[] { 1, 3, 5 }));
 
 Could also test for order - depending on the requirements.
 
+More useful assertions for collections:
+
+```cs
+Assert.That(result, Is.Ordered);            //  if your method is supposed to be sorted
+Assert.That(result, Is.Unique);             //  if you need to make sure there are no duplicates
+```
+
+When you're testing methods that return an array or collection, make sure your test methods are not too general or too specific.
+
 ### Testing the Return Types of Methods
+
+Sometimes you need to verify that the method you're testing is returning the right type.
+
+Method:
+
+```cs
+public ActionResult GetCustomer(int id)
+{
+    if (id == 0)
+        return new NotFound();
+
+    return new Ok();
+}
+```
+
+We need to verify this is returning an `ActionResult` - and we have two paths: `NotFound()` and `OK()`
+
+Test:
+
+```cs
+[TestFixture]
+public class CustomerControllerTests
+{
+    [Test]
+    public void GetCustomer_IdIsZero_ReturnNotFound()
+    {
+        var controller = new CustomerController();
+
+        var result = controller.GetCustomer(0);
+
+        Assert.That(result, Is.TypeOf<NotFound>());
+    }
+
+    [Test]
+    public void GetCustomer_IdIsNotZero_ReturnOk()
+    {
+        var controller = new CustomerController();
+
+        var result = controller.GetCustomer(1);
+
+        Assert.That(result, Is.TypeOf<Ok>());
+    }
+}
+```
+
+Two ways to `Assert` here:
+
+```cs
+//  most often used:
+Assert.That(result, Is.OfType<NotFound>());
+
+//  alternative:
+Assert.That(result, Is.InstanceOf<NotFound>());
+```
+
+`InstanceOf<>()` means result can be a `NotFound` object **or** one of its derivatives.
+
+`TypeOf<>()` ensures that the result is **exactly** a `NotFound` obejct.
 
 ### Testing Void Methods
 
