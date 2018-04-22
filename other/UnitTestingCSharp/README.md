@@ -649,6 +649,47 @@ Assert.That(result, Is.InstanceOf<NotFound>());
 
 ### Testing Void Methods
 
+A void function is a *command* function (as opposed to a query function). These functions often change some kind of state.
+
+Method to test:
+
+```cs
+public string LastError { get; set; }
+
+public void Log(string error)
+{
+    if (String.IsNullOrWhiteSpace(error))
+        throw new ArgumentNullException();
+
+    LastError = error;                          // what we're testing
+
+    // Write the log to a storage
+    // ...
+
+    ErrorLogged?.Invoke(this, Guid.NewGuid());
+}
+```
+
+For now, we're just going to test the method's ability to set the `LastError` property.
+
+Test:
+
+```cs
+[TestFixture]
+public class ErrorLoggerTests
+{
+    [Test]
+    public void Log_WhenCalled_SetTheLastErrorProperty()
+    {
+        var logger = new ErrorLogger();
+
+        logger.Log("a");
+
+        Assert.That(logger.LastError, Is.EqualTo("a"));
+    }
+}
+```
+
 ### Testing Methods that Throw Exceptions
 
 ### Testing Methods that Raise an Event
