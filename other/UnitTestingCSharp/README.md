@@ -724,6 +724,29 @@ public void Log_InvalidError_ThrowArgumentNullException(string error)
 
 ### Testing Methods that Raise an Event
 
+Now we can test the last part of the `Log()` method.
+
+```cs
+ErrorLogged?.Invoke(this, Guid.NewGuid());
+```
+
+Before acting, we're going to subscribe to the event. So, if the log method raises the event, we'll be notified.
+
+```cs
+[Test]
+public void Log_ValidError_RaiseErrorLoggedEvent()
+{
+    var logger = new ErrorLogger();
+
+    var id = Guid.Empty;
+    logger.ErrorLogged += (sender, args) => { id = args; };
+
+    logger.Log("a");
+
+    Assert.That(id, Is.Not.EqualTo(Guid.Empty));
+}
+```
+
 ### Testing Private Methods
 
 ### Code Coverage
