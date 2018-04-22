@@ -692,6 +692,36 @@ public class ErrorLoggerTests
 
 ### Testing Methods that Throw Exceptions
 
+Now, we'll look at testing this part of the above `Log` method:
+
+```cs
+if (String.IsNullOrWhiteSpace(error))
+    throw new ArgumentNullException();
+```
+
+There are three paths:
+
+1. `null`
+2. `""`
+3. `" "`
+
+We'll test the three paths using three parameterized test cases.
+
+Test exceptions using a `delegate` in the assert:
+
+```cs
+[Test]
+[TestCase(null)]
+[TestCase("")]
+[TestCase(" ")]
+public void Log_InvalidError_ThrowArgumentNullException(string error)
+{
+    var logger = new ErrorLogger();
+
+    Assert.That(() => logger.Log(error), Throws.ArgumentNullException);
+}
+```
+
 ### Testing Methods that Raise an Event
 
 ### Testing Private Methods
