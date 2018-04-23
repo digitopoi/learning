@@ -769,6 +769,28 @@ How do we know if we have enough tests for a method or a class?
 
 3. NCover
 
-The fact that you have all execution paths in the method tested - doesn't mean you have enough tests for a method. It just means you've written all tests based on the current implementation. However, it is possible that the implementation has a problem. 
+The fact that you have all execution paths in the method tested - doesn't mean you have enough tests for a method. It just means you've written all tests based on the current implementation. However, it is possible that the implementation has a problem.
 
 ### Testing in the Real-World
+
+We don't live in an ideal world and there are constraints that will prevent you from testing as nicely as we've done previously.
+
+There are some situations where you should think about automated testing more realistically.
+
+- When you're dealing with a legacy application without unit testing in mind.
+
+  - not inherently testable
+
+  - you have to spend a lot of time to make them testable (costs greater than benefits)
+
+  - you could decide to refactor a small, critical parts of the application - but, not the whole thing.
+
+- When you're working at a startup company and you have limited time to turn a concept into working production software.
+
+  - again, you may not have time to write tests for every part of the application
+
+- When you are the only developer on the team who practices writing clean, testable code. 
+
+  - educate your team and help them write cleaner and more testable code
+
+  - The Art of Writing Beautiful C# Code
