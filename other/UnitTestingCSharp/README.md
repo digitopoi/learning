@@ -749,6 +749,14 @@ public void Log_ValidError_RaiseErrorLoggedEvent()
 
 ### Testing Private Methods
 
+You shouldn't test private methods!
+
+Private methods are implementation detail - **very fragile!**.
+
+There are tools to test private members or you can make it public to test it - but, you shouldn't do this.
+
+When you write tests of private or protected members - your tests are coupled to an implementation detail (that could change much more frequently than public members).
+
 ### Code Coverage
 
 ### Testing in the Real-World
