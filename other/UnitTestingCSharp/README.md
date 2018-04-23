@@ -759,4 +759,16 @@ When you write tests of private or protected members - your tests are coupled to
 
 ### Code Coverage
 
+How do we know if we have enough tests for a method or a class?
+
+**Code coverage tools** - scans your code and tells you what parts of your code are not tested.
+
+1. Visual Studio Enterprise Edition
+
+2. ReSharper Ultimate - (DotCover)
+
+3. NCover
+
+The fact that you have all execution paths in the method tested - doesn't mean you have enough tests for a method. It just means you've written all tests based on the current implementation. However, it is possible that the implementation has a problem. 
+
 ### Testing in the Real-World
