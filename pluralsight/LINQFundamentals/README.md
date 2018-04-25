@@ -118,13 +118,72 @@ IEnumerable<Employee> scotts = EnumerableExtensions.Where(exployees,
                                     });
 ```
 
-This code doesn't look at all like a query
+This code doesn't look at all like a query.
+
+Future versions of C# allowed us to write queries with pretty syntax and type checking.
 
 ```cs
 Sequence<Employee> scotts = employees.Where(Name == "Scott");
+
+var scotts = from e in employees
+             where e.Name == "Scott"
+             select e;
 ```
 
+By the end of the module, you'll come to understand that there is no magic - but, there is a compiler working very hard to make this LINQ dream come true!
+
 ### The Power of IEnumerable
+
+With two different collections, we can iterate over either:
+
+```cs
+Employee[] developers = new Employee[]
+{
+    new Employee { Id = 1, Name = "Scott" },
+    new Employee { Id = 2, Name = "Chris" }
+};
+
+List<Employee> sales = new List<Employee>()
+{
+    new Employee { Id = 3, Name = "Alex" }
+};
+
+foreach (var person in developers)
+{
+    Console.WriteLine(person.Name);
+}
+
+foreach (var person in sales)
+{
+    Console.WriteLine(person.Name);
+}
+```
+
+This is because both of these classes have a special method called `GetEnumerator()` - because both implement the `IEnumerable<T>` interface:
+
+```cs
+sales.GetEnumerator();
+```
+
+`GetEnumerable()` is really the only method that `IEnumerable` implements.
+
+`IEnumerable<T>` is a very important interface for LINQ - all of the query operations that I can perform using LINQ operate off of this interface or another special interface we'll look at later.
+
+`IEnumerable<T>` can represent a wide variety of data structures.
+
+```cs
+IEnumerator<Employee> enumerator = developers.GetEnumerator();
+while (enumerator.MoveNext())
+{
+    Console.WriteLine(enumerator.Current.Name);
+}
+```
+
+This would work on either the `sales` or `developers` collection - you can hide these behind this interface.
+
+`MoveNext()` doesn't care if it's moving through an array or a list.
+
+LINQ works by added extension methods - which allow you to work against an interface without changing that underlying type. We don't want to change `IEnumerable` - we don't want to add these methods on the interface (that just makes it harder to implement and to change in the future).
 
 ### Creating an Extension Method
 
