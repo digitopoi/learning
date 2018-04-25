@@ -187,6 +187,42 @@ LINQ works by added extension methods - which allow you to work against an inter
 
 ### Creating an Extension Method
 
+Extension methods allow us to define a static method that appears to be a member of another type - anything - even sealed classes that we can't extend using inheritance.
+
+```cs
+public string class StringExtensions
+{
+    static public double ToDouble(this string data)
+    {
+        double result = double.Parse(data);
+        return result;
+    }
+}
+```
+
+The `this` keyword tells the compiler that this is an extension method operating on the `string` class. `ToDouble()` now appears as if it's a method on the `string` class.
+
+LINQ makes wide use of extension methods to extend interfaces like `IEnumerable<T>` - and all of the LINQ operators are all defined as extension methods.
+
+Building `Count()` LINQ method:
+
+```cs
+public static class MyLinq
+{
+    public static int Count<T>(this IEnumerable<T> sequence)
+    {
+        int count = 0;
+        foreach (var item in sequence)
+        {
+            count += 1;
+        }
+        return count;
+    }
+}
+```
+
+You can't implement an extension method that already exists on the type - ex. `ToString()`
+
 ### Understanding Lambda Expressions
 
 ### Using Func and Action Types
