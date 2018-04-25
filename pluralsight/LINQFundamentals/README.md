@@ -75,7 +75,7 @@ private static void ShowLargeFilesWithLinq(string path)
 
     foreach (var file in query.Take(5))
     {
-        Console.WriteLine($"{file.Name, -20} : {file.Length, 10:N0}");
+        Console.WriteLine($"{ file.Name, -20 } : { file.Length, 10:N0 }");
     }
 }
 ```
@@ -91,13 +91,50 @@ private static void ShowLargeFilesWithLinq(string path)
 
     foreach (var file in query)
     {
-        Console.WriteLine($"{file.Name, -20} : {file.Length, 10:N0}");
+        Console.WriteLine($"{ file.Name, -20 } : { file.Length, 10:N0 }");
     }
 }
 ```
 
-
 ## LINQ and C#
+
+Features of C# you should know about to use LINQ
+
+### Evolving the Language
+
+First, it is important to understand what LINQ is trying to do.
+
+LINQ is designed to work against different data sources. To abstract these different data sources away we talk about a *sequence* of something - where sequence is a magical data type that doesn't exactly tell us where the data is coming from. We want it to work as well against an array as against a database.
+
+Common query operators, like `Where` (which applies a filter), should be easy to express - and not just that you want to filter but *how* to filter.
+
+With version 2 of the C# language, the best you could do is this:
+
+```cs
+IEnumerable<Employee> scotts = EnumerableExtensions.Where(exployees,
+                                    delegate(Employee e)
+                                    {
+                                        return e.Name == "Scott";
+                                    });
+```
+
+This code doesn't look at all like a query
+
+```cs
+Sequence<Employee> scotts = employees.Where(Name == "Scott");
+```
+
+### The Power of IEnumerable
+
+### Creating an Extension Method
+
+### Understanding Lambda Expressions
+
+### Using Func and Action Types
+
+### Using var for Implicit Typing
+
+### Query Syntax versus Method Syntax
 
 ## LINQ Queries
 
