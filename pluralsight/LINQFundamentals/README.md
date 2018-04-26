@@ -225,6 +225,34 @@ You can't implement an extension method that already exists on the type - ex. `T
 
 ### Understanding Lambda Expressions
 
+Without lambda expressions, it could look like this:
+
+```cs
+//  With named method
+IEnumerable<string> filteredList = cities.Where(StartsWithL);
+
+public bool StartsWithL(string name)
+{
+    return name.StartsWith("L");
+}
+```
+
+Becomes cumbersome to write a filtering and sorting operation for every use case in an application.
+
+Another option with a delegate:
+
+```cs
+//  With anonymous method
+IEnumerable<string> filteredList = cities.Where(delegate(string s) { return s.StartsWith("L"); });
+```
+
+A lambda expression is a short, concise syntax for defining a method I can invoke.
+
+```cs
+//  With lambda expression
+IEnumerable<string> filteredList = cities.Where(s => s.StartsWith("L"));
+```
+
 ### Using Func and Action Types
 
 ### Using var for Implicit Typing
