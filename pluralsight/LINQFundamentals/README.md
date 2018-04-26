@@ -255,6 +255,44 @@ IEnumerable<string> filteredList = cities.Where(s => s.StartsWith("L"));
 
 ### Using Func and Action Types
 
+```cs
+cities.Where(s => s.StartsWith("L"));
+```
+
+With intellisense, we can see that `Where()` takes `Func<Employee, bool>` as its parameter.
+
+`Func<>` was introduced as an easy way to work with delegates - and delegates are types that allow me to create variables that point to methods.
+
+A `Func<>` can take from 1 - 17 types. These describe the parameters and the return type of a method. The last generic type parameter always describes the return type - the ones prior to it always describe the parameters.
+
+A method that takes an int as a parameter and returns an int: `Func<int, int>`
+
+```cs
+Func<int, int> square = x => x*x;
+
+Console.WriteLine(square(3));       //  9
+```
+
+```cs
+Func<int, int, int> add = (x, y) => x + y;
+
+Console.WriteLine(square(add(3, 5)));       // 64
+```
+
+`Action` isn't something that you will use a lot with LINQ. LINQ mostly uses the `Func` type - but, an `Action` method always returns `void`. The generic type parameters only describe the incoming parameters to the method.
+
+`Action<int>` will be a method that accepts a single integer and doesn't return anything.
+
+```cs
+Action<int> write = x => Console.WriteLine(x);
+
+write(square(add(3, 5)));                   // 64
+```
+
+Here you see how you can chain these methods together to create an expression - this is what LINQ does.
+
+Lambda expressions are just a way to create executable code. They are a way to define a method, but that method doesn't have to be an instance of a method or a static named method on a class. It's something that can easily be in-lined in a short expression.
+
 ### Using var for Implicit Typing
 
 ### Query Syntax versus Method Syntax
