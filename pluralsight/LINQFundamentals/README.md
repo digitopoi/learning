@@ -295,6 +295,25 @@ Lambda expressions are just a way to create executable code. They are a way to d
 
 ### Using var for Implicit Typing
 
+`var` allows the compiler to infer the type of the variable.
+
+```cs
+var name = "Scott";
+var x = 3.0;
+var y = 2;
+var z = x * y;
+
+//  All lines print "True"
+Console.WriteLine(name is String);
+Console.WriteLine(x is double);
+Console.WriteLine(y is int);
+Console.WriteLine(z is double);
+```
+
+The `var` keyword **doesn't** introduce dynamic typing. The variable is still strongly typed. I can't assign an `int` to the variable `name` because name is a `string`.
+
+You can't use `var` when defining parameters to a method or a field or property on a class.
+
 ### Query Syntax versus Method Syntax
 
 ## LINQ Queries
