@@ -316,6 +316,21 @@ You can't use `var` when defining parameters to a method or a field or property 
 
 ### Query Syntax versus Method Syntax
 
+Query syntax:
+
+```cs
+string[] cities = { "Boston", "Los Angeles", "Seattle", "London", "Hyperaband" };
+
+var filteredCities = from city in cities
+                     where city.StartsWith("L") && city.Length < 15
+                     orderby city
+                     select city;
+```
+
+Query syntax ends in `select` or `group`. `select` appears at the end of a query in `C#` - it appears first in an `SQL` query.
+
+The query syntax and the method syntax are equivalent in most cases, however, not every LINQ operator is available in query syntax - so, sometimes we must use method syntax. For example: `Count()`, `Take()`, `Skip()`
+
 ## LINQ Queries
 
 ## Filter, Ordering, and Projecting
